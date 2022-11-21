@@ -22,7 +22,7 @@ function addNewColorButton(colors, onInput) {
     `;
 }
 
-export default (colors, onInput, activeColor) => html`
+export default (state, colors, onInput, activeColor) => html`
     <div class="ui-option">
         <legend class="ui-label ui-label--row">Color</legend>
         <ol class="icon-list color-list">
@@ -32,19 +32,19 @@ export default (colors, onInput, activeColor) => html`
                     color => html`
                         <li
                             class="icon-list__item color-list__item"
-                            title="${color.displayNumber}"
+                            title="${color.color.displayNumber}"
                         >
                             <input
                                 type="radio"
-                                id="brush-color__${color.id}"
+                                id="brush-color__${color.color.id}"
                                 name="brush-color"
-                                value="${color.id}"
-                                ?checked="${color.id === activeColor}"
+                                value="${color.color.id}"
+                                ?checked="${color.color.id === activeColor}"
                                 @change="${onInput}"
                             />
                             <div
                                 class="icon-list__item__radio"
-                                style="background: ${color.color}"
+                                style="background: ${color.color.color}"
                             ></div>
                         </li>
                     `

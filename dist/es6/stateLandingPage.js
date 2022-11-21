@@ -1881,7 +1881,6 @@
     "virginia": "Virginia",
     "rhode_island": "Rhode Island",
     "utah": "Utah",
-	"Prince Williams County": "Prince Williams County",
     "vabeach": "Virginia",
     "providence_ri": "Rhode Island",
     "yakima_wa": "Washington",
@@ -2098,11 +2097,11 @@
     community: html(_templateObject2$1 || (_templateObject2$1 = _taggedTemplateLiteral(["\n        <div class=\"place-info\">Identify a community</div>\n    "])))
   });
 
-  var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject30, _templateObject31, _templateObject32, _templateObject33, _templateObject34, _templateObject35, _templateObject36;
+  var _templateObject, _templateObject2, _templateObject3, _templateObject4, _templateObject5, _templateObject6, _templateObject8, _templateObject9, _templateObject10, _templateObject11, _templateObject12, _templateObject13, _templateObject14, _templateObject15, _templateObject16, _templateObject17, _templateObject18, _templateObject19, _templateObject20, _templateObject21, _templateObject22, _templateObject23, _templateObject24, _templateObject25, _templateObject26, _templateObject27, _templateObject28, _templateObject29, _templateObject32, _templateObject33, _templateObject34, _templateObject35;
   var stateLandingPage = (function () {
     var curState = document.head.id;
     console.log(curState);
-    var vraPage = curState === "VRA - Dashboard"; // document.title = curState.concat(" | Districtr");
+    var onlyElemMode = curState === "VRA - Dashboard"; // document.title = curState.concat(" | Districtr");
     //comment to trigger a build, remove if you see this
 
     fetch("/assets/data/landing_pages.json?v=2").then(function (response) {
@@ -2111,6 +2110,7 @@
       var stateData = data.filter(function (st) {
         return st.state === curState;
       })[0];
+      console.log(stateData.modules[0]);
       document.title = curState.concat(" | Districtr");
       var def = stateData.modules.filter(function (m) {
         return m.default;
@@ -2119,40 +2119,39 @@
       render(navLinks(stateData.sections, stateData.modules.map(function (m) {
         return m.ids;
       })), document.getElementById("nav-links"));
-      var vraFutures = vraPage ? stateData.states.map(function (st) {
+      var vraFutures = onlyElemMode ? stateData.states.map(function (st) {
         return listPlacesForState(st, true);
       }) : null;
-      var statePlaces = vraPage ? Promise.all(vraFutures) : listPlacesForState(stateData.state, true);
+      var statePlaces = onlyElemMode ? Promise.all(vraFutures) : listPlacesForState(stateData.state, true);
       statePlaces.then(function (ps) {
-        var places = vraPage ? ps.flat(1) : ps;
+        var places = onlyElemMode ? ps.flat(1) : ps;
         var districtingPlaces = places.filter(function (p) {
           return !p.limit && p.units.some(function (u) {
             return !u.limit;
           });
         });
-        var onlyCommunityMode = districtingPlaces.length == 0;
-        console.log(places);
-        console.log(stateData);
-        console.log(onlyCommunityMode);
-        console.log(vraPage); // render page
+        var onlyHighMode = districtingPlaces.length == 0;
+        var onlyMiddleMode = districtingPlaces.length == 0; // render page
 
-        render(drawPage(stateData, onlyCommunityMode, vraPage), document.getElementsByClassName("place__content")[0]); // build a plan options
+        console.log("test 1");
+        render(drawPage(stateData, onlyHighMode, onlyElemMode), document.getElementsByClassName("place__content")[0]); // build a plan options
 
-        if (!onlyCommunityMode) {
-          var target = document.getElementById("districting-options");
+        if (!onlyMiddleMode && !onlyHighMode) {
+          var target = document.getElementById("elementary-options");
           render(districtingOptions(districtingPlaces), target);
-        }
-
-        if (!vraPage) {
-          var commtarget = document.getElementById("community-options");
-          render(communityOptions(places), commtarget);
         }
 
         $(".places-list__item").hide();
         def.ids.map(function (id) {
           return $("." + id).show();
         });
-        onlyCommunityMode ? $(".communities").show() : $(".communities").hide(); // select default place
+        console.log("test");
+        onlyHighMode ? $(".high").show() : $(".high").hide();
+        onlyMiddleMode ? $(".middle").show() : $(".middle").hide();
+        $(".higcurr_1").hide();
+        $(".higlast1_1").hide();
+        $(".midcurr_1").hide();
+        $(".midlast1_1").hide(); // select default place
 
         var btn = document.getElementById(def.id);
 
@@ -2168,7 +2167,7 @@
           $(id).show();
         };
 
-        if (vraPage) {
+        if (onlyElemMode) {
           toggleViz($("." + def.id));
           selected.ids.map(function (id) {
             return $("." + id).show();
@@ -2179,12 +2178,13 @@
         $('input[name="place-selection"]:radio').click(function () {
           var inputValue = $(this).attr("value");
           var targetBox = $("." + inputValue);
+          console.log(inputValue);
           selected = stateData.modules.filter(function (m) {
             return m.id === inputValue;
           })[0];
           $(".places-list__item").hide();
 
-          if (vraPage) {
+          if (onlyElemMode) {
             toggleViz(targetBox);
           }
 
@@ -2197,6 +2197,8 @@
           var inputValue = $(this).attr("value");
           var cls = $(this).attr("class");
           var targetBox = $("." + inputValue);
+          var optionsTargetBox = $("." + inputValue + "-options");
+          console.log(inputValue);
 
           if (selected.mode) {
             btn.click();
@@ -2209,22 +2211,61 @@
             $('input[name="place-selection"]:radio')[i].className = cls;
           }
 
-          $(".districts").hide();
-          $(".communities").hide();
+          $(".elementary").hide();
+          $(".middle").hide();
+          $(".high").hide();
+          $(".elem").hide();
+          $(".places-list__item").hide();
+          $(".higcurr_1").hide();
+          $(".higlast1_1").hide();
+          $(".midcurr_1").hide();
+          $(".midlast1_1").hide();
+          $(".elemcurr_1").hide();
+          $(".elempast1_1").hide();
+
+          if (inputValue == "elementary") {
+            $(".elemcurr_1").show();
+            document.getElementById("elemcurr_1").checked = true;
+            document.getElementById("elempast1_1").checked = false;
+            $(".elempast1_1").show();
+            $(".places-list__item--small").hide();
+            $(".elemcurr_1").show();
+          } else if (inputValue == "middle") {
+            $(".midcurr_1").show();
+            document.getElementById("midcurr_1").checked = true;
+            document.getElementById("midlast1_1").checked = false;
+            $(".midlast1_1").show();
+            $(".places-list__item--small").hide();
+            $(".midcurr_1").show();
+          } else {
+            $(".higcurr_1").show();
+            document.getElementById("higcurr_1").checked = true;
+            document.getElementById("higlast1_1").checked = false;
+            $(".higlast1_1").show();
+            $(".places-list__item--small").hide();
+            $(".higcurr_1").show();
+          }
+
+          document.getElementById("place-elementary").style = "";
           $(targetBox).show();
+          $(optionsTargetBox).show();
         });
 
         if (window.location.search.includes("mode=coi")) {
           $('input[value="communities"]').trigger('click');
         }
 
-        $('input[name="custom-selection"]:checkbox').click(function () {
-          var target = document.getElementById("districting-options");
+        $('input[name="custom-selection", id="elementary-options"]:checkbox').click(function () {
+          console.log("elementary");
+          var target = document.getElementById("elementary-options");
+          $(".place-middle").hide();
+          $(".place-high").hide();
+          $(".place-elementary").show();
+          $(".middle-options").hide();
+          $(".high-options").hide();
+          $(".elementary-options").show();
           render(districtingOptions(districtingPlaces), target);
           $('input[name="place-selection"]:checked').click();
-        });
-        $(document).ready(function () {
-          $(".all_about_redistricting_st")[0].href = "https://redistricting.lls.edu/states-" + stateData.code + ".php";
         });
       });
       return stateData;
@@ -2233,43 +2274,29 @@
 
   var navLinks = function navLinks(sections, placeIds) {
     return sections.map(function (section) {
-      return section.nav ? html(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n        <li class=\"nav ", "\">\n            <a href=\"#", "\"\n              class=\"nav-links__link nav-links__link--major\">\n                ", "\n            </a>\n        </li>"])), section.pages ? section.pages.reduce(function (l, ac) {
-        return l.concat(" ").concat(ac);
-      }) : placeIds.reduce(function (l, ac) {
-        return l.concat(" ").concat(ac);
-      }), section.nav.replace(/\s+/g, '-').toLowerCase(), section.nav) : html(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral([""])));
-    }).concat([html(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["<li class=\"nav ", "\">\n            <a href=\"/new\">\n                <img\n                    class=\"nav-links__link nav-links__link--major nav-links__link--img\"\n                    src=\"/assets/usa_light_blue.png?v=2\"\n                    alt=\"Back to Map\"\n                  />\n            </a>\n        </li>\n    "])), placeIds.reduce(function (l, ac) {
-      return l.concat(" ").concat(ac);
-    }))]);
+      return section.nav ? html(_templateObject || (_templateObject = _taggedTemplateLiteral(["\n        <li class=\"nav\">\n            <a href=\"#", "\"\n              class=\"nav-links__link nav-links__link--major\">\n                ", "\n            </a>\n        </li>"])), section.nav.replace(/\s+/g, '-').toLowerCase(), section.nav) : html(_templateObject2 || (_templateObject2 = _taggedTemplateLiteral([""])));
+    }).concat([html(_templateObject3 || (_templateObject3 = _taggedTemplateLiteral(["<li class=\"nav\">\n            <a href=\"/\">\n                <img\n\t\t\t\t\tstyle='padding-top:0rem; padding-bottom:0rem; height:100px;'                    \n                    class=\"nav-links__link nav-links__link--major nav-links__link--img\"\n                    src=\"/assets/Virginia.png?v=2\"\n                    alt=\"Back to Map\"\n                  />\n            </a>\n        </li>\n    "])))]);
   };
 
   var drawPage = function drawPage(stateData, onlyCommunities, vra) {
-    return html(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["\n\n        <h1 class=\"headline place__name\"> ", " </h1>\n\n        ", "\n\n\n\n        ", "\n\n        ", "\n\n    "])), stateData.state, onlyCommunities || vra ? html(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral([""]))) : html(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["<div class=\"place-options places-list\">\n                                     <input type=\"radio\" value=\"elementary\"  id=\"elementary\" name=\"draw-selection\" checked=\"checked\" class=\"dist\">\n                                     <label for=\"elementary\" class=\"mode-selection\">Draw Elementary School Districts</label>\n                                     <input type=\"radio\" value=\"middle\"  id=\"middle\" name=\"draw-selection\" class=\"dist\">\n                                     <label for=\"middle\" class=\"mode-selection\">Draw Middle School Districts</label>                                 <input type=\"radio\" value=\"high\"  id=\"high\" name=\"draw-selection\" checked=\"checked\" class=\"dist\">\n                                 <label for=\"high\" class=\"mode-selection\">Draw High School Districts</label>\n                                 </div>"]))), stateData.sections.map(function (s) {
+    return html(_templateObject4 || (_templateObject4 = _taggedTemplateLiteral(["\n\t\n\t\t<br>\n\t\t<br>\n\t\t\n        <h1 class=\"headline place__name\"> ", " </h1>\n\n        ", "\n\n\n\n        ", "\n\n    "])), stateData.state, onlyCommunities || vra ? html(_templateObject5 || (_templateObject5 = _taggedTemplateLiteral([""]))) : html(_templateObject6 || (_templateObject6 = _taggedTemplateLiteral(["<div class=\"place-options places-list\">\n                                     <input type=\"radio\" value=\"elementary\"  id=\"elementary\" name=\"draw-selection\" checked=\"checked\" class=\"elem\">\n                                     <label for=\"elementary\" class=\"mode-selection\">Draw Elementary School Districts</label>\n\t\t\t\t\t\t\t\t\t <input type=\"radio\" value=\"middle\"  id=\"middle\" name=\"draw-selection\" class=\"mid\">\n                                     <label for=\"middle\" class=\"mode-selection\">Draw Middle School Districts</label>\n                                     <input type=\"radio\" value=\"high\"  id=\"high\" name=\"draw-selection\" class=\"hig\">\n                                     <label for=\"high\" class=\"mode-selection\">Draw High School Districts</label>\n                                 </div>"]))), stateData.sections.map(function (s) {
       return drawSection(s, stateData, onlyCommunities);
-    }), until(fetch("assets/about/landing/footer.html").then(function (r) {
-      if (r.status === 200) return r.text();else throw new Error(r.statusText);
-    }).then(function (content) {
-      return $.parseHTML(content);
-    }).then(function () {
-      // Since this is the longest request on the page, we fire
-      // a page-load-complete event to let all listeners know that
-      // the page has loaded. This lets us scroll the page to
-      // the desired section properly.
-      var load = new Event("page-load-complete");
-      window.dispatchEvent(load);
-    })));
+    }));
   };
 
   var drawSection = function drawSection(section, stateData, onlyCommunities) {
     var section_body = html(_templateObject8 || (_templateObject8 = _taggedTemplateLiteral(["<div id=\"", "\" class=\"jump\"></div>\n                             <h2>", "</h2>"])), section.nav.replace(/\s+/g, '-').toLowerCase(), section.name);
+    console.log(section.type);
 
     if (section.type === "draw") {
-      section_body = html(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["\n\n            <div id=\"", "\" class=\"jump\"></div>\n\n            ", "\n\n            <h2 class=\"communities\">Draw your community</h2>\n\n            ", "\n\n             ", "\n\n            <div id=\"community-options\" class=\"communities\"></div>\n            <p style=\"text-align: right;\"><a href=\"#data\">What are the building blocks?</a>\n            </br><a href=\"#data\">What are the data layers?</a></p>\n        "])), section.nav.replace(/\s+/g, '-').toLowerCase(), !onlyCommunities ? html(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["<h2 class=\"districts\">Draw a plan from scratch</h2>"]))) : html(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral([""]))), stateData.modules.length > 1 ? html(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["<div class=\"place-options places-list locals\">\n                ", "\n            </div>"])), stateData.modules.map(function (m) {
-        return html(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["<input type=\"radio\" value=\"", "\"\n                                                     id=\"", "\" name=\"place-selection\">\n                                                  <label for=\"", "\" class=\"", "\">", "</label>"])), m.id, m.id, m.id, m.mode, m.name);
-      })) : "", !onlyCommunities ? html(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["<div id=\"districting-options\" class=\"districts\"></div>"]))) : html(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral([""]))));
+      section_body = html(_templateObject9 || (_templateObject9 = _taggedTemplateLiteral(["\n\n            <div id=\"", "\" class=\"jump\"></div>\n\n            ", "\n\t\t\t\n\t\t\t<h2 style=\"display:none;\" class=\"middle\">Draw Middle School Boundaries from scratch</h2>\n\t\t\t<h2 style=\"display:none;\" class=\"high\">Draw High School Boundaries from scratch</h2>\n\n            ", "\n\t\t\t\n\n             ", "\n\n            <div style=\"display:none;\" id=\"middle-options\" class=\"middle\"></div>\n\t\t\t\n\t\t\t<div style=\"display:none;\" id=\"high-options\" class=\"high\"></div>\n\t\t\t\n            <p style=\"text-align: right;\"><a href=\"#data\">What are the building blocks?</a>\n            </br><a href=\"#data\">What are the data layers?</a></p>\n        "])), section.nav.replace(/\s+/g, '-').toLowerCase(), !onlyCommunities ? html(_templateObject10 || (_templateObject10 = _taggedTemplateLiteral(["<h2 class=\"elementary\">Draw Elementary School Boundaries from scratch</h2>"]))) : html(_templateObject11 || (_templateObject11 = _taggedTemplateLiteral([""]))), stateData.modules.length > 1 ? html(_templateObject12 || (_templateObject12 = _taggedTemplateLiteral(["<div id=\"place-elementary\" class=\"place-options places-list locals elementary\">\n                ", "\n            </div>"])), stateData.modules.map(function (m) {
+        return html(_templateObject13 || (_templateObject13 = _taggedTemplateLiteral(["<input type=\"radio\" value=\"", "\"\n                                                     id=\"", "\" name=\"place-selection\">\n                                                  <label for=\"", "\" value=\"", "\" id=\"", "_1\" class=\"", "\">", "</label>"])), m.id, m.id, m.id, m.id, m.id, m.id, m.name);
+      })) : "", stateData.modules.length > 1 ? html(_templateObject14 || (_templateObject14 = _taggedTemplateLiteral(["<div id=\"place-elementary2\" class=\"place-options places-list\">\n\t\t\t\t", "\n\t\t\t </div>"])), stateData.modules.map(function (m) {
+        return html(_templateObject15 || (_templateObject15 = _taggedTemplateLiteral(["<div id=\"elementary-options\" class=\"", "_2\"></div>"])), m.id);
+      })) : "");
     } else if (section.type === "plans") {
-      console.log(section);
-      section_body = html(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["\n            <div id=\"", "\" class=\"jump\"></div>\n            ", "\n            ", "\n            <p>", "</p>\n            <div id=\"plans\">", "</div>\n            \n        "])), section.nav.replace(/\s+/g, '-').toLowerCase(), section.name ? html(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["<h2>", "</h2>"])), section.name) : html(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral([""]))), section.no_header ? html(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral([""]))) : html(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral(["<p>Sometimes the easiest way to get started is by exploring a complete plan.\n                                            Click on any of the plans below to open it in Districtr.\n                                            Then feel free to start modifying it yourself!</p>"]))), section.disc, plansSection(section.plans, section.ref));
+      console.log("plans");
+      section_body = html(_templateObject16 || (_templateObject16 = _taggedTemplateLiteral(["\n            <div id=\"", "\" class=\"jump\"></div>\n            ", "\n            ", "\n            <p>", "</p>\n            <div id=\"plans\">", "</div>\n            \n        "])), section.nav.replace(/\s+/g, '-').toLowerCase(), section.name ? html(_templateObject17 || (_templateObject17 = _taggedTemplateLiteral(["<h2>", "</h2>"])), section.name) : html(_templateObject18 || (_templateObject18 = _taggedTemplateLiteral([""]))), section.no_header ? html(_templateObject19 || (_templateObject19 = _taggedTemplateLiteral([""]))) : html(_templateObject20 || (_templateObject20 = _taggedTemplateLiteral([""]))), section.disc, plansSection(section.plans, section.ref));
     } else if (section.type === "text") {
       section_body = html(_templateObject21 || (_templateObject21 = _taggedTemplateLiteral(["\n            <div id=\"", "\" class=\"jump\"></div>\n            <h2>", "</h2>\n            ", "\n            ", "\n            ", "\n        "])), section.nav.replace(/\s+/g, '-').toLowerCase(), section.name, section.content_source ? until(fetch(section.content_source).then(function (r) {
         if (r.status === 200) {
@@ -2295,21 +2322,17 @@
         })) : "", s.content ? $.parseHTML(s.content) : "");
       }) : "");
     }
-    var placeIds = stateData.modules.map(function (m) {
+    stateData.modules.map(function (m) {
       return m.id;
     });
-    return html(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["\n        <div class=\"text-toggle ", "\">\n                ", "\n        </div>\n    "])), section.pages ? section.pages.reduce(function (l, ac) {
-      return l.concat(" ").concat(ac);
-    }) : placeIds.reduce(function (l, ac) {
-      return l.concat(" ").concat(ac);
-    }), section_body);
+    return html(_templateObject23 || (_templateObject23 = _taggedTemplateLiteral(["\n        <div class=\"text-toggle\">\n                ", "\n        </div>\n    "])), section_body);
   };
 
   var plansSection = function plansSection(plans, place) {
     return plans.map(function (_ref) {
       var title = _ref.title,
           plans = _ref.plans;
-      return html(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["\n            <section class=\"place__section\">\n                <h3>", "</h3>\n                <p>\n                    Important note: these \u201Cpainted\u201D maps of current districts may differ from the legal definition of the districting plans because they were adjusted to match the geographic units that are shown as tiles in Districtr.  In particular, this may cause districts that are perfectly population balanced to appear to have deviations of up to a few percent.\n                </p>\n                ", "\n            </section>\n        "])), title, loadablePlans(plans, place));
+      return html(_templateObject24 || (_templateObject24 = _taggedTemplateLiteral(["\n            <section class=\"place__section\">\n                <h3>", "</h3>\n                ", "\n            </section>\n        "])), title, loadablePlans(plans, place));
     });
   };
 
@@ -2328,53 +2351,27 @@
   };
 
   var loadablePlan = function loadablePlan(plan, place) {
-    return html(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["\n    <a href=\"/", "/", "\">\n        <li class=\"plan-thumbs__thumb\">\n            <img\n                class=\"thumb__img\"\n                src=\"/assets/", "-plans/", ".png?v=2\"\n                alt=\"Districting Plan ", "\"\n            />\n            <figcaption class=\"thumb__caption\">\n                <h6 class=\"thumb__heading\">", "</h6>\n                ", "\n                ", "\n            </figcaption>\n        </li>\n    </a>\n"])), place, plan.id, place, plan.id, plan.id, plan.name || plan.id, plan.description ? plan.description : "", plan.numbers ? numberList(plan.numbers) : "");
+    return html(_templateObject28 || (_templateObject28 = _taggedTemplateLiteral(["\n    <a href=\"/", "/", "\">\n        <li class=\"plan-thumbs__thumb\">\n            <figcaption class=\"thumb__caption\">\n                <h6 class=\"thumb__heading\">", "</h6>\n                ", "\n                ", "\n            </figcaption>\n        </li>\n    </a>\n"])), place, plan.id, plan.name || plan.id, plan.description ? plan.description : "", plan.numbers ? numberList(plan.numbers) : "");
   };
 
   var districtingOptions = function districtingOptions(places) {
     return html(_templateObject29 || (_templateObject29 = _taggedTemplateLiteral(["\n        <ul class=\"places-list places-list--columns\">\n              ", "\n        </ul>\n    "])), placeItemsTemplate(places, startNewPlan));
   };
 
-  var communityOptions = function communityOptions(places) {
-    return html(_templateObject30 || (_templateObject30 = _taggedTemplateLiteral(["\n        <ul class=\"places-list places-list--columns\">\n            ", "\n        </ul>\n    "])), placeItemsTemplateCommunities(places, startNewPlan));
-  };
-
-  var placeItemsTemplateCommunities = function placeItemsTemplateCommunities(places, onClick) {
-    return places.sort(function (a, b) {
-      return a.name < b.name ? -1 : 1;
-    }).map(function (place) {
-      var problem = {
-        type: "community",
-        numberOfParts: 50,
-        pluralNoun: "Community"
-      };
-      return getUnits(place, problem, true).filter(function (u) {
-        return !u.hideOnDefault;
-      }).map(function (units) {
-        return html(_templateObject31 || (_templateObject31 = _taggedTemplateLiteral(["\n            <li class=\"", " places-list__item places-list__item--small\"\n                @click=\"", "\">\n                <div class=\"place-name\">", "</div>\n                ", "\n                <div class=\"place-info\">\n                    Built out of ", "\n                </div>\n            </li>\n            "])), place.id, function () {
-          return onClick(place, problem, units);
-        }, place.name, problemTypeInfo[problem.type] || "", units.name);
-      });
-    }).reduce(function (items, item) {
-      return [].concat(_toConsumableArray(items), _toConsumableArray(item));
-    }, []);
-  };
-
   var problemTypeInfo = {
-    multimember: html(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["\n        <div class=\"place-info\">\n            Multi-member districts of varying sizes\n        </div>\n    "]))),
-    community: html(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["\n        <div class=\"place-info\">Identify a community</div>\n    "])))
+    multimember: html(_templateObject32 || (_templateObject32 = _taggedTemplateLiteral(["\n        <div class=\"place-info\">\n            Multi-member districts of varying sizes\n        </div>\n    "])))
   };
 
   var placeItemsTemplate = function placeItemsTemplate(places, onClick) {
     var showAll = document.getElementById("custom") && document.getElementById("custom").checked;
     var num_hidden = places.map(function (place) {
-      return place.districtingProblems.filter(function (problem) {
+      return place.elemProblems.filter(function (problem) {
         return problem.hideOnDefault;
       });
     }).reduce(function (items, item) {
       return [].concat(_toConsumableArray(items), _toConsumableArray(item));
     }, []).length || places.map(function (place) {
-      return place.districtingProblems.filter(function (problem) {
+      return place.elemProblems.filter(function (problem) {
         return !problem.hideOnDefault;
       }).map(function (problem) {
         return getAllUnits(place, problem).filter(function (u) {
@@ -2387,10 +2384,11 @@
     .reduce(function (items, item) {
       return [].concat(_toConsumableArray(items), _toConsumableArray(item));
     }, []).length;
+    console.log(num_hidden);
     return places.sort(function (a, b) {
       return a.name < b.name ? -1 : 1;
     }).map(function (place) {
-      return place.districtingProblems.sort(function (a, b) {
+      return place.elemProblems.sort(function (a, b) {
         // change so Reapportioned always comes first
         if (a.name === "2020 Reapportioned Congress" && b.name !== "2020 Reapportioned Congress") {
           return -1;
@@ -2411,9 +2409,9 @@
         }).map(function (units) {
           return (// this ternary can be removed if we don't want to deal with the new
             // district numbers separately
-            problem.pluralNoun.includes("Reapportioned") ? html(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["\n                <li\n                class=\"", " places-list__item places-list__item--small reapportioned ", "\"\n                @click=\"", "\"\n                >\n                    <div class=\"place-name\">\n                        ", "\n                    </div>\n                    ", "\n                    <div class=\"place-info\">\n                        ", " Congressional Districts\n                    </div>\n                    <div class=\"place-info\">\n                        Built out of ", "\n                    </div>\n                </li>\n            "])), place.id, (problem.hideOnDefault || units.hideOnDefault) && "old-card", function () {
+            problem.pluralNoun.includes("Reapportioned") ? html(_templateObject33 || (_templateObject33 = _taggedTemplateLiteral(["\n                <li\n                class=\"", " places-list__item places-list__item--small reapportioned ", "\"\n                @click=\"", "\"\n                >\n                    <div class=\"place-name\">\n                        ", "\n                    </div>\n                    ", "\n                    <div class=\"place-info\">\n                        ", " Congressional Districts\n                    </div>\n                    <div class=\"place-info\">\n                        Built out of ", "\n                    </div>\n                </li>\n            "])), place.id, (problem.hideOnDefault || units.hideOnDefault) && "old-card", function () {
               return onClick(place, problem, units);
-            }, place.name, problemTypeInfo[problem.type] || "", problem.numberOfParts, units.unitType == 'VTDs' ? units.name : units.name.toLowerCase()) : html(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["\n                    <li\n                    class=\"", " places-list__item places-list__item--small ", "\"\n                    @click=\"", "\"\n                    >\n                        <div class=\"place-name\">\n                            ", "\n                        </div>\n                        ", "\n                        <div class=\"place-info\">\n                            ", " ", "\n                        </div>\n                        <div class=\"place-info\">\n                            Built out of ", "\n                        </div>\n                    </li>\n                "])), place.id, (problem.hideOnDefault || units.hideOnDefault) && "old-card", function () {
+            }, place.name, problemTypeInfo[problem.type] || "", problem.numberOfParts, units.unitType == 'VTDs' ? units.name : units.name.toLowerCase()) : html(_templateObject34 || (_templateObject34 = _taggedTemplateLiteral(["\n                    <li\n                    class=\"", " places-list__item places-list__item--small ", "\"\n                    @click=\"", "\"\n                    >\n                        <div class=\"place-name\">\n                            ", "\n                        </div>\n                        ", "\n                        <div class=\"place-info\">\n                            ", " ", "\n                        </div>\n                        <div class=\"place-info\">\n                            Built out of ", "\n                        </div>\n                    </li>\n                "])), place.id, (problem.hideOnDefault || units.hideOnDefault) && "old-card", function () {
               return onClick(place, problem, units);
             }, place.name, problemTypeInfo[problem.type] || "", problem.numberOfParts, problem.pluralNoun, units.unitType == 'VTDs' ? units.name : units.name.toLowerCase())
           );
@@ -2421,7 +2419,7 @@
       });
     }).reduce(function (items, item) {
       return [].concat(_toConsumableArray(items), _toConsumableArray(item));
-    }, []).concat([!showAll && num_hidden ? html(_templateObject36 || (_templateObject36 = _taggedTemplateLiteral(["<li>\n                <div style=\"padding-top:30px\">\n                    <input type=\"checkbox\" id=\"custom\" name=\"custom-selection\">\n                    <label for=\"custom\">", "</label>\n                </div>\n            </li>"])), showAll ? "Show Less" : "Show All") : ""]);
+    }, []).concat([!showAll && num_hidden ? html(_templateObject35 || (_templateObject35 = _taggedTemplateLiteral(["<li>\n                <div style=\"padding-top:30px\">\n                    <input type=\"checkbox\" id=\"custom\" name=\"custom-selection\">\n                </div>\n            </li>"]))) : ""]);
   };
 
   return stateLandingPage;

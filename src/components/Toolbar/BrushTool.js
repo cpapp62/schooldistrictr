@@ -11,11 +11,12 @@ const icon = (active, colorId, colors) => {
 };
 
 export default class BrushTool extends Tool {
-    constructor(brush, colors, options) {
+    constructor(state, brush, colors, options) {
         super("brush", "Paint", icon);
+		this.state = state;
         this.brush = brush;
         this.colors = colors;
-        this.options = new BrushToolOptions(brush, colors, undefined, options);
+        this.options = new BrushToolOptions(state, brush, colors, undefined, options);
 
         hotkeys.filter = ({ target }) => {
             return (!["INPUT", "TEXTAREA"].includes(target.tagName)
@@ -50,8 +51,9 @@ export default class BrushTool extends Tool {
 }
 
 class BrushToolOptions {
-    constructor(brush, colors, renderToolbar, options) {
-        this.brush = brush;
+    constructor(state, brush, colors, renderToolbar, options) {
+        this.state = state;
+		this.brush = brush;
         this.colors = colors;
         this.renderToolbar = renderToolbar;
         this.options = options;
@@ -61,7 +63,9 @@ class BrushToolOptions {
         this.toggleBrushLock = this.toggleBrushLock.bind(this);
     }
     selectColor(e) {
-        this.brush.setColor(e.target.value);
+		let str = e.target.value;
+		
+        this.brush.setColor(this.colors[parseInt(str.charAt(str.length-1))-1].color.color);
         this.renderToolbar();
         if (document.querySelectorAll) {
             let community_opts = document.querySelectorAll('.custom-select .custom-option');
@@ -102,10 +106,12 @@ class BrushToolOptions {
         this.brush.locked = !this.brush.locked;
     }
     render() {
+		console.log(this.brush);
+		console.log(this.colors);
         const activeColor = this.colors[this.brush.color].id;
         return html`
             ${this.colors.length > 1
-                ? BrushColorPicker(this.colors, this.selectColor, activeColor)
+                ? BrushColorPicker(this.state, this.colors, this.selectColor, activeColor)
                 : ""}
             ${BrushSlider(this.brush.radius, this.changeRadius)}
             ${this.options && this.options.county_brush

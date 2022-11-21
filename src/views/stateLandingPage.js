@@ -7,13 +7,13 @@ import { until } from "lit-html/directives/until";
 export default () => {
     var curState = document.head.id;
 	console.log(curState);
-    const vraPage = curState === "VRA - Dashboard";
+    const onlyElemMode = curState === "VRA - Dashboard";
     // document.title = curState.concat(" | Districtr");
     //comment to trigger a build, remove if you see this
     fetch("/assets/data/landing_pages.json?v=2")
         .then(response => response.json()).then(data => {
             var stateData = data.filter(st => st.state === curState)[0];
-
+			console.log(stateData.modules[0]);
             document.title = curState.concat(" | Districtr");
             var def = stateData.modules.filter(m => m.default)[0];
 
@@ -23,35 +23,35 @@ export default () => {
 
 
 
-            const vraFutures = vraPage ? stateData.states.map(st => listPlacesForState(st, true)) : null
-            const statePlaces = vraPage ? Promise.all(vraFutures) : listPlacesForState(stateData.state, true);
+            const vraFutures = onlyElemMode ? stateData.states.map(st => listPlacesForState(st, true)) : null
+            const statePlaces = onlyElemMode ? Promise.all(vraFutures) : listPlacesForState(stateData.state, true);
 
 
             statePlaces.then(ps => {
-                let places = vraPage ? ps.flat(1) : ps;
+                let places = onlyElemMode ? ps.flat(1) : ps;
                 let districtingPlaces = places.filter(p => !p.limit && p.units.some(u => !u.limit));
-                let onlyCommunityMode = districtingPlaces.length == 0;
-				console.log(places)
-                console.log(stateData)
-                console.log(onlyCommunityMode)
-                console.log(vraPage)
+                let onlyHighMode = districtingPlaces.length == 0;
+				let onlyMiddleMode = districtingPlaces.length == 0;
                 // render page
-                render(drawPage(stateData, onlyCommunityMode, vraPage), document.getElementsByClassName("place__content")[0]);
+				console.log("test 1");
+                render(drawPage(stateData, onlyHighMode, onlyElemMode), document.getElementsByClassName("place__content")[0]);
 
                 // build a plan options
-                if (!onlyCommunityMode) {
-                     const target = document.getElementById("districting-options");
+                if (!onlyMiddleMode && !onlyHighMode) {
+                     const target = document.getElementById("elementary-options");
                      render(districtingOptions(districtingPlaces), target);
                 }
-                if (!vraPage) {
-                    const commtarget = document.getElementById("community-options");
-                    render(communityOptions(places), commtarget);
-                }
+				
                 $(".places-list__item").hide();
                 def.ids.map(id => $("." + id).show());
-
-                onlyCommunityMode ? $(".communities").show() : $(".communities").hide();
-
+				console.log("test");
+                onlyHighMode ? $(".high").show() : $(".high").hide();
+				onlyMiddleMode ? $(".middle").show() : $(".middle").hide();
+				$(".higcurr_1").hide();
+				$(".higlast1_1").hide();
+				$(".midcurr_1").hide();
+				$(".midlast1_1").hide();
+				
 
                 // select default place
                 var btn = document.getElementById(def.id);
@@ -67,20 +67,20 @@ export default () => {
                     $(id).show();
                 }
 
-                if (vraPage) {
+                if (onlyElemMode) {
                     toggleViz($("." + def.id));
                     selected.ids.map(id => $("." + id).show());
                 }
-
 
                 // config toggle buttons
                 $('input[name="place-selection"]:radio').click(function() {
                     var inputValue = $(this).attr("value");
                     var targetBox = $("." + inputValue);
+					console.log(inputValue);
                     selected = stateData.modules.filter(m => m.id === inputValue)[0];
 
                     $(".places-list__item").hide();
-                    if (vraPage) {
+                    if (onlyElemMode) {
                         toggleViz(targetBox);
                     }
                     selected.ids.map(id => $("." + id).show());
@@ -92,7 +92,8 @@ export default () => {
                     var inputValue = $(this).attr("value");
                     var cls = $(this).attr("class");
                     var targetBox = $("." + inputValue);
-
+					var optionsTargetBox = $("." + inputValue + "-options");
+					console.log(inputValue);
                     if (selected.mode) {
                         btn.click();
                     }
@@ -102,25 +103,59 @@ export default () => {
                     for (i = 0; i < l; i++) {
                         $('input[name="place-selection"]:radio')[i].className = cls;
                     }
-
-                    $(".districts").hide();
-                    $(".communities").hide();
+                    $(".elementary").hide();
+                    $(".middle").hide();
+					$(".high").hide();
+					$(".elem").hide();
+					$(".places-list__item").hide();
+					$(".higcurr_1").hide();
+					$(".higlast1_1").hide();
+					$(".midcurr_1").hide();
+					$(".midlast1_1").hide();
+					$(".elemcurr_1").hide();
+					$(".elempast1_1").hide();
+					if(inputValue == "elementary"){
+						$(".elemcurr_1").show();
+						document.getElementById("elemcurr_1").checked = true;
+						document.getElementById("elempast1_1").checked = false;
+						$(".elempast1_1").show();
+						$(".places-list__item--small").hide();
+						$(".elemcurr_1").show();
+					} else if(inputValue == "middle"){
+						$(".midcurr_1").show();
+						document.getElementById("midcurr_1").checked = true;
+						document.getElementById("midlast1_1").checked = false;
+						$(".midlast1_1").show();
+						$(".places-list__item--small").hide();
+						$(".midcurr_1").show();
+					}else{
+						$(".higcurr_1").show();
+						document.getElementById("higcurr_1").checked = true;
+						document.getElementById("higlast1_1").checked = false;
+						$(".higlast1_1").show();
+						$(".places-list__item--small").hide();
+						$(".higcurr_1").show();
+					}
+					document.getElementById("place-elementary").style = "";
                     $(targetBox).show();
+					$(optionsTargetBox).show();
                 });
 
                 if (window.location.search.includes("mode=coi")) {
                   $('input[value="communities"]').trigger('click');
                 }
 
-                $('input[name="custom-selection"]:checkbox').click(function(){
-                    var target = document.getElementById("districting-options");
+                $('input[name="custom-selection", id="elementary-options"]:checkbox').click(function(){
+					console.log("elementary");
+                    var target = document.getElementById("elementary-options");
+                    $(".place-middle").hide();
+					$(".place-high").hide();
+					$(".place-elementary").show();
+					$(".middle-options").hide();
+					$(".high-options").hide();
+					$(".elementary-options").show();
                     render(districtingOptions(districtingPlaces), target);
                     $('input[name="place-selection"]:checked').click();
-                });
-
-                $(document).ready(function(){
-                  $(".all_about_redistricting_st")[0].href = "https://redistricting.lls.edu/states-"+ stateData.code + ".php";
-
                 });
             });
             return stateData;
@@ -130,19 +165,19 @@ export default () => {
 
 const navLinks = (sections, placeIds) =>
     sections.map(section => section.nav ? html`
-        <li class="nav ${section.pages ? section.pages.reduce((l, ac) => l.concat(" ").concat(ac))
-                                       : placeIds.reduce((l, ac) => l.concat(" ").concat(ac))}">
+        <li class="nav">
             <a href="#${section.nav.replace(/\s+/g, '-').toLowerCase()}"
               class="nav-links__link nav-links__link--major">
                 ${section.nav}
             </a>
         </li>`: html``
 
-    ).concat([html`<li class="nav ${placeIds.reduce((l, ac) => l.concat(" ").concat(ac))}">
-            <a href="/new">
+    ).concat([html`<li class="nav">
+            <a href="/">
                 <img
+					style='padding-top:0rem; padding-bottom:0rem; height:100px;'                    
                     class="nav-links__link nav-links__link--major nav-links__link--img"
-                    src="/assets/usa_light_blue.png?v=2"
+                    src="/assets/Virginia.png?v=2"
                     alt="Back to Map"
                   />
             </a>
@@ -151,39 +186,25 @@ const navLinks = (sections, placeIds) =>
 
 const drawPage = (stateData, onlyCommunities, vra) => {
     return html`
-
+	
+		<br>
+		<br>
+		
         <h1 class="headline place__name"> ${stateData.state} </h1>
 
         ${onlyCommunities || vra ? html``
                           : html`<div class="place-options places-list">
-                                     <input type="radio" value="districts"  id="districts" name="draw-selection" checked="checked" class="dist">
-                                     <label for="districts" class="mode-selection">Draw Districts</label>
-                                     <input type="radio" value="communities"  id="communities" name="draw-selection" class="comm">
-                                     <label for="communities" class="mode-selection">Draw Communities</label>
+                                     <input type="radio" value="elementary"  id="elementary" name="draw-selection" checked="checked" class="elem">
+                                     <label for="elementary" class="mode-selection">Draw Elementary School Districts</label>
+									 <input type="radio" value="middle"  id="middle" name="draw-selection" class="mid">
+                                     <label for="middle" class="mode-selection">Draw Middle School Districts</label>
+                                     <input type="radio" value="high"  id="high" name="draw-selection" class="hig">
+                                     <label for="high" class="mode-selection">Draw High School Districts</label>
                                  </div>`}
 
 
 
         ${stateData.sections.map(s => drawSection(s, stateData, onlyCommunities))}
-
-        ${
-            until(
-                fetch("assets/about/landing/footer.html")
-                    .then((r) => {
-                        if (r.status === 200) return r.text();
-                        else throw new Error(r.statusText);
-                    })
-                .then(content => $.parseHTML(content))
-                .then(() => {
-                    // Since this is the longest request on the page, we fire
-                    // a page-load-complete event to let all listeners know that
-                    // the page has loaded. This lets us scroll the page to
-                    // the desired section properly.
-                    let load = new Event("page-load-complete");
-                    window.dispatchEvent(load);
-                })
-            )
-        }
 
     `;
 };
@@ -196,35 +217,41 @@ const drawTitles = (modules, st) =>
 const drawSection = (section, stateData, onlyCommunities) => {
     var section_body =  html`<div id="${section.nav.replace(/\s+/g, '-').toLowerCase()}" class="jump"></div>
                              <h2>${section.name}</h2>`;
+	console.log(section.type);
     if (section.type === "draw") {
        section_body = html`
 
             <div id="${section.nav.replace(/\s+/g, '-').toLowerCase()}" class="jump"></div>
 
-            ${!onlyCommunities ? html`<h2 class="districts">Draw a plan from scratch</h2>` : html``}
+            ${!onlyCommunities ? html`<h2 class="elementary">Draw Elementary School Boundaries from scratch</h2>` : html``}
+			
+			<h2 style="display:none;" class="middle">Draw Middle School Boundaries from scratch</h2>
+			<h2 style="display:none;" class="high">Draw High School Boundaries from scratch</h2>
 
-            <h2 class="communities">Draw your community</h2>
-
-            ${stateData.modules.length > 1 ? html`<div class="place-options places-list locals">
+            ${stateData.modules.length > 1 ? html`<div id="place-elementary" class="place-options places-list locals elementary">
                 ${stateData.modules.map(m => html`<input type="radio" value="${m.id}"
                                                      id="${m.id}" name="place-selection">
-                                                  <label for="${m.id}" class="${m.mode}">${m.name}</label>`)}
+                                                  <label for="${m.id}" value="${m.id}" id="${m.id}_1" class="${m.id}">${m.name}</label>`)}
             </div>` : ""}
+			
 
-             ${!onlyCommunities ? html`<div id="districting-options" class="districts"></div>` : html``}
+             ${stateData.modules.length > 1 ? html`<div id="place-elementary2" class="place-options places-list">
+				${stateData.modules.map(m => html`<div id="elementary-options" class="${m.id}_2"></div>`)}
+			 </div>` : ""}
 
-            <div id="community-options" class="communities"></div>
+            <div style="display:none;" id="middle-options" class="middle"></div>
+			
+			<div style="display:none;" id="high-options" class="high"></div>
+			
             <p style="text-align: right;"><a href="#data">What are the building blocks?</a>
             </br><a href="#data">What are the data layers?</a></p>
         `;
     } else if (section.type === "plans") {
-		console.log(section);
+		console.log("plans");
         section_body = html`
             <div id="${section.nav.replace(/\s+/g, '-').toLowerCase()}" class="jump"></div>
             ${section.name ? html`<h2>${section.name}</h2>` : html``}
-            ${section.no_header ?  html``: html `<p>Sometimes the easiest way to get started is by exploring a complete plan.
-                                            Click on any of the plans below to open it in Districtr.
-                                            Then feel free to start modifying it yourself!</p>`}
+            ${section.no_header ?  html``: html ``}
             <p>${section.disc}</p>
             <div id="plans">${plansSection(section.plans, section.ref)}</div>
             
@@ -257,8 +284,7 @@ const drawSection = (section, stateData, onlyCommunities) => {
 
     var placeIds = stateData.modules.map(m => m.id);
     return html`
-        <div class="text-toggle ${section.pages ? section.pages.reduce((l, ac) => l.concat(" ").concat(ac))
-                                                : placeIds.reduce((l, ac) => l.concat(" ").concat(ac))}">
+        <div class="text-toggle">
                 ${section_body}
         </div>
     `
@@ -269,9 +295,6 @@ const plansSection = (plans, place) =>
         ({ title, plans }) => html`
             <section class="place__section">
                 <h3>${title}</h3>
-                <p>
-                    Important note: these “painted” maps of current districts may differ from the legal definition of the districting plans because they were adjusted to match the geographic units that are shown as tiles in Districtr.  In particular, this may cause districts that are perfectly population balanced to appear to have deviations of up to a few percent.
-                </p>
                 ${loadablePlans(plans, place)}
             </section>
         `
@@ -300,11 +323,6 @@ const numberList = numbers => html`
 const loadablePlan = (plan, place) => html`
     <a href="/${place}/${plan.id}">
         <li class="plan-thumbs__thumb">
-            <img
-                class="thumb__img"
-                src="/assets/${place}-plans/${plan.id}.png?v=2"
-                alt="Districting Plan ${plan.id}"
-            />
             <figcaption class="thumb__caption">
                 <h6 class="thumb__heading">${plan.name || plan.id}</h6>
                 ${plan.description ? plan.description : ""}
@@ -333,7 +351,7 @@ const placeItemsTemplateCommunities = (places, onClick) =>
         var problem = { type: "community", numberOfParts: 50, pluralNoun: "Community" };
         return getUnits(place, problem, true).filter(u => !u.hideOnDefault).map(
             units => html`
-            <li class="${place.id} places-list__item places-list__item--small"
+            <li class="$virginia places-list__item places-list__item--small"
                 @click="${() => onClick(place, problem, units)}">
                 <div class="place-name">${place.name}</div>
                 ${problemTypeInfo[problem.type] || ""}
@@ -349,23 +367,20 @@ const problemTypeInfo = {
         <div class="place-info">
             Multi-member districts of varying sizes
         </div>
-    `,
-    community: html`
-        <div class="place-info">Identify a community</div>
     `
 };
 
 const placeItemsTemplate = (places, onClick) => {
     const showAll = document.getElementById("custom") && document.getElementById("custom").checked;
 
-    let num_hidden = places.map(place => place.districtingProblems.filter(problem => problem.hideOnDefault)).reduce((items, item) => [...items, ...item], []).length ||
-                        places.map(place => place.districtingProblems.filter(problem => !problem.hideOnDefault)
+    let num_hidden = places.map(place => place.elemProblems.filter(problem => problem.hideOnDefault)).reduce((items, item) => [...items, ...item], []).length ||
+                        places.map(place => place.elemProblems.filter(problem => !problem.hideOnDefault)
                         .map(problem => getAllUnits(place, problem).filter(u => u.hideOnDefault)))
                         .reduce((items, item) => [...items, ...item], []) // have to flatten twice I guess
                         .reduce((items, item) => [...items, ...item], []).length;
-
+	console.log(num_hidden);
     return places.sort((a, b) => (a.name < b.name) ? -1 : 1).map(place =>
-        place.districtingProblems
+        place.elemProblems
         .sort((a, b) => {
             // change so Reapportioned always comes first
             if (a.name === "2020 Reapportioned Congress" && b.name !== "2020 Reapportioned Congress") {
@@ -431,7 +446,6 @@ const placeItemsTemplate = (places, onClick) => {
             (!showAll && num_hidden) ? html`<li>
                 <div style="padding-top:30px">
                     <input type="checkbox" id="custom" name="custom-selection">
-                    <label for="custom">${showAll ? "Show Less" : "Show All"}</label>
                 </div>
             </li>`
           : ""
@@ -440,7 +454,7 @@ const placeItemsTemplate = (places, onClick) => {
 
 const customPlaceItemsTemplate = (places, onClick) =>
     places.map(place =>
-        place.districtingProblems
+        place.elemProblems
         .map(problem =>
             getUnits(place, problem).map(
                 units => html`

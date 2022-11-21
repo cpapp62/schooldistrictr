@@ -44,5 +44,5 @@ export function labelPosition(deviation, gap, width) {
 }
 
 export function numberOfSeats(d, ideal) {
-    return Math.round(d / ideal);
+    return Math.round((d / ideal), 0);
 }

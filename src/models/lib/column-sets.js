@@ -206,6 +206,7 @@ function getVoters(place, parts) {
 }
 
 function getElections(place, parts) {
+	console.log(place);
     const elections = place.columnSets.filter(
         columnSet => columnSet.type === "election"
     );

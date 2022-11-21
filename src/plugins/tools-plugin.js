@@ -104,10 +104,10 @@ export default function ToolsPlugin(editor) {
             window.planNumbers.update(state, colorsAffected);
         }
     });
-
+	console.log(state);
     let tools = [
         new PanTool(),
-        new BrushTool(brush, state.parts, brushOptions),
+        new BrushTool(state, brush, state.parts, brushOptions),
         new EraserTool(brush),
         new InspectTool(
             state.layers,

@@ -837,7 +837,7 @@ p {
 }
 .state {
   transition: all 100ms ease;
-  fill: #dddddd;
+  fill: #8400A8;
 }
 
 .state:hover {

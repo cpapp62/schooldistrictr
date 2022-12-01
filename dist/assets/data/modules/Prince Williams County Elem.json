@@ -1,0 +1,374 @@
+[
+  {
+    "elemProblems": [
+      {
+        "pluralNoun": "Elementary Schools",
+        "numberOfParts": 63,
+        "name": "Schools"
+      }
+    ],
+    "id": "elemcurr_1",
+    "name": "Prince Williams County",
+    "units": [
+      {
+        "id": "PZs20",
+        "name": "2022 PZs",
+        "unitType": "PZs",
+        
+        "idColumn": {
+          "name": "PZ GEOID code",
+          "key": "GEOID20"
+        },
+        "bounds": [
+          [
+            -83.6754,
+            36.5409
+          ],
+          [
+            -75.1664,
+            39.466
+          ]
+        ],
+        "tilesets": [
+          {
+            "type": "fill",
+            "source": {
+              "type": "vector",
+              "url": "mapbox://districtr.va_adj_vtds20"
+            },
+            "sourceLayer": "va_adj_vtds20"
+          },
+          {
+            "type": "circle",
+            "source": {
+              "type": "vector",
+              "url": "mapbox://districtr.va_adj_vtds20_points"
+            },
+            "sourceLayer": "va_adj_vtds20_points"
+          }
+        ]
+      }
+    ],
+    "state": "Virginia"
+  },
+  {
+    "name": "Prince Williams County",
+    "units": [
+      {
+        "id": "planningzones",
+        "name": "2022 PZs",
+        "unitType": "Planning Zones",
+        
+        "idColumn": {
+          "name": "Block group FIPS code",
+          "key": "GEOID10"
+        },
+        "bounds": [
+          [-76.2278, 36.5505],
+          [-75.7975, 37.0409]
+        ],
+        "tilesets": [
+          {
+            "type": "circle",
+            "source": {
+              "type": "vector",
+              "url": "mapbox://districtr.vabeach_blockgroups_points"
+            },
+            "sourceLayer": "vabeach_blockgroups_points"
+          },
+          {
+            "type": "fill",
+            "source": {
+              "type": "vector",
+              "url": "mapbox://districtr.vabeach_blockgroups"
+            },
+            "sourceLayer": "vabeach_blockgroups"
+          }
+        ]
+      }
+    ],
+    "state": "Prince Williams County",
+    "id": "elempast1_1",
+    "elemProblems": [
+      {
+        "pluralNoun": "Elementary Schools",
+        "numberOfParts": 62,
+        "name": "Schools"
+      }
+    ],
+	"state": "Prince Williams County",
+    "id": "midcurr_1",
+    "elemProblems": [
+      {
+        "pluralNoun": "Middle Schools",
+        "numberOfParts": 18,
+        "name": "Schools"
+      }
+    ],
+	"state": "Prince Williams County",
+    "id": "midlast1_1",
+    "elemProblems": [
+      {
+        "pluralNoun": "Middle Schools",
+        "numberOfParts": 18,
+        "name": "Schools"
+      }
+    ],
+	"name": "Prince Williams County",
+    "id": "higcurr_1",
+    "elemProblems": [
+      {
+        "pluralNoun": "High Schools",
+        "numberOfParts": 13,
+        "name": "Schools"
+      }
+    ],
+	"state": "Prince Williams County",
+    "id": "higlast1_1",
+    "elemProblems": [
+      {
+        "pluralNoun": "High Schools",
+        "numberOfParts": 13,
+        "name": "Schools"
+      }
+    ]
+  },
+  {
+    "name": "Prince Williams County",
+    "units": [
+      {
+        "id": "planningzones",
+        "name": "2022 PZs",
+        "unitType": "Planning Zones",
+        
+        "idColumn": {
+          "name": "Block group FIPS code",
+          "key": "GEOID10"
+        },
+        "bounds": [
+          [-76.2278, 36.5505],
+          [-75.7975, 37.0409]
+        ],
+        "tilesets": [
+          {
+            "type": "circle",
+            "source": {
+              "type": "vector",
+              "url": "mapbox://districtr.vabeach_blockgroups_points"
+            },
+            "sourceLayer": "vabeach_blockgroups_points"
+          },
+          {
+            "type": "fill",
+            "source": {
+              "type": "vector",
+              "url": "mapbox://districtr.vabeach_blockgroups"
+            },
+            "sourceLayer": "vabeach_blockgroups"
+          }
+        ]
+      }
+    ],
+    "state": "Prince Williams County",
+    "id": "elempast1_1",
+    "elemProblems": [
+      {
+        "pluralNoun": "Elementary Schools",
+        "numberOfParts": 62,
+        "name": "Schools"
+      }
+    ],
+	"state": "Prince Williams County",
+    "id": "midcurr_1",
+    "elemProblems": [
+      {
+        "pluralNoun": "Middle Schools",
+        "numberOfParts": 18,
+        "name": "Schools"
+      }
+    ],
+	"state": "Prince Williams County",
+    "id": "midlast1_1",
+    "elemProblems": [
+      {
+        "pluralNoun": "Middle Schools",
+        "numberOfParts": 18,
+        "name": "Schools"
+      }
+    ],
+	"name": "Prince Williams County",
+    "id": "higcurr_1",
+    "elemProblems": [
+      {
+        "pluralNoun": "High Schools",
+        "numberOfParts": 13,
+        "name": "Schools"
+      }
+    ]
+  },
+  {
+    "name": "Prince Williams County",
+    "units": [
+      {
+        "id": "planningzones",
+        "name": "2022 PZs",
+        "unitType": "Planning Zones",
+        
+        "idColumn": {
+          "name": "Block group FIPS code",
+          "key": "GEOID10"
+        },
+        "bounds": [
+          [-76.2278, 36.5505],
+          [-75.7975, 37.0409]
+        ],
+        "tilesets": [
+          {
+            "type": "circle",
+            "source": {
+              "type": "vector",
+              "url": "mapbox://districtr.vabeach_blockgroups_points"
+            },
+            "sourceLayer": "vabeach_blockgroups_points"
+          },
+          {
+            "type": "fill",
+            "source": {
+              "type": "vector",
+              "url": "mapbox://districtr.vabeach_blockgroups"
+            },
+            "sourceLayer": "vabeach_blockgroups"
+          }
+        ]
+      }
+    ],
+    "state": "Prince Williams County",
+    "id": "elempast1_1",
+    "elemProblems": [
+      {
+        "pluralNoun": "Elementary Schools",
+        "numberOfParts": 62,
+        "name": "Schools"
+      }
+    ],
+	"state": "Prince Williams County",
+    "id": "midcurr_1",
+    "elemProblems": [
+      {
+        "pluralNoun": "Middle Schools",
+        "numberOfParts": 18,
+        "name": "Schools"
+      }
+    ],
+	"state": "Prince Williams County",
+    "id": "midlast1_1",
+    "elemProblems": [
+      {
+        "pluralNoun": "Middle Schools",
+        "numberOfParts": 18,
+        "name": "Schools"
+      }
+    ]
+  },
+  {
+    "name": "Prince Williams County",
+    "units": [
+      {
+        "id": "planningzones",
+        "name": "2022 PZs",
+        "unitType": "Planning Zones",
+        
+        "idColumn": {
+          "name": "Block group FIPS code",
+          "key": "GEOID10"
+        },
+        "bounds": [
+          [-76.2278, 36.5505],
+          [-75.7975, 37.0409]
+        ],
+        "tilesets": [
+          {
+            "type": "circle",
+            "source": {
+              "type": "vector",
+              "url": "mapbox://districtr.vabeach_blockgroups_points"
+            },
+            "sourceLayer": "vabeach_blockgroups_points"
+          },
+          {
+            "type": "fill",
+            "source": {
+              "type": "vector",
+              "url": "mapbox://districtr.vabeach_blockgroups"
+            },
+            "sourceLayer": "vabeach_blockgroups"
+          }
+        ]
+      }
+    ],
+    "state": "Prince Williams County",
+    "id": "elempast1_1",
+    "elemProblems": [
+      {
+        "pluralNoun": "Elementary Schools",
+        "numberOfParts": 62,
+        "name": "Schools"
+      }
+    ],
+	"state": "Prince Williams County",
+    "id": "midcurr_1",
+    "elemProblems": [
+      {
+        "pluralNoun": "Middle Schools",
+        "numberOfParts": 18,
+        "name": "Schools"
+      }
+    ]
+  },
+  {
+    "name": "Prince Williams County",
+    "units": [
+      {
+        "id": "planningzones",
+        "name": "2022 PZs",
+        "unitType": "Planning Zones",
+        
+        "idColumn": {
+          "name": "Block group FIPS code",
+          "key": "GEOID10"
+        },
+        "bounds": [
+          [-76.2278, 36.5505],
+          [-75.7975, 37.0409]
+        ],
+        "tilesets": [
+          {
+            "type": "circle",
+            "source": {
+              "type": "vector",
+              "url": "mapbox://districtr.vabeach_blockgroups_points"
+            },
+            "sourceLayer": "vabeach_blockgroups_points"
+          },
+          {
+            "type": "fill",
+            "source": {
+              "type": "vector",
+              "url": "mapbox://districtr.vabeach_blockgroups"
+            },
+            "sourceLayer": "vabeach_blockgroups"
+          }
+        ]
+      }
+    ],
+    "state": "Prince Williams County",
+    "id": "elempast1_1",
+    "elemProblems": [
+      {
+        "pluralNoun": "Elementary Schools",
+        "numberOfParts": 62,
+        "name": "Schools"
+      }
+    ]
+  }
+]

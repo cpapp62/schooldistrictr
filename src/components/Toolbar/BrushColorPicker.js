@@ -1,6 +1,7 @@
 import { html } from "lit-html";
 
 function addNewColorButton(colors, onInput) {
+	console.log(colors);
     const nextColor = colors.find(color => color.visible === false);
     const onClick = () => {
         nextColor.visible = true;
@@ -32,7 +33,7 @@ export default (state, colors, onInput, activeColor) => html`
                     color => html`
                         <li
                             class="icon-list__item color-list__item"
-                            title="${color.color.displayNumber}"
+                            title="${color.color.name}"
                         >
                             <input
                                 type="radio"

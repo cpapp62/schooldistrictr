@@ -65,7 +65,10 @@ class BrushToolOptions {
     selectColor(e) {
 		let str = e.target.value;
 		
-        this.brush.setColor(this.colors[parseInt(str.charAt(str.length-1))-1].color.color);
+		console.log((e.target.value).split(/d/));
+		console.log(this.colors);
+        //this.brush.setColor(this.colors[parseInt(str.charAt(str.length-1))-1].color.color);
+		this.brush.setColor((e.target.value).split(/d/));
         this.renderToolbar();
         if (document.querySelectorAll) {
             let community_opts = document.querySelectorAll('.custom-select .custom-option');
@@ -106,9 +109,9 @@ class BrushToolOptions {
         this.brush.locked = !this.brush.locked;
     }
     render() {
-		console.log(this.brush);
+		let number = 0;
+        const activeColor = (this.state.place.id).substr(0, 2) + (this.state.place.id).charAt((this.state.place.id).length-1);
 		console.log(this.colors);
-        const activeColor = this.colors[this.brush.color].id;
         return html`
             ${this.colors.length > 1
                 ? BrushColorPicker(this.state, this.colors, this.selectColor, activeColor)

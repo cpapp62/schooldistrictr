@@ -69,6 +69,7 @@
         "@babel/plugin-transform-runtime": "^7.14.5",
         "@babel/runtime": "^7.14.6",
         "@rollup/plugin-json": "^4.1.0",
+		"@arcgis/core": "^4.25.1",
         "bad-words": "^3.0.4",
         "chance": "^1.1.7",
         "d3-geo": "^2.0.2",

@@ -1,7 +1,7 @@
 // check
 const fs = require("fs"),
       fetch = require("node-fetch");
-const mbPublicKey = "pk.eyJ1IjoiZGlzdHJpY3RyIiwiYSI6ImNqbjUzMTE5ZTBmcXgzcG81ZHBwMnFsOXYifQ.8HRRLKHEJA0AismGk2SX2g";
+const mbPublicKey = "pk.eyJ1IjoiY3BhcHA2MSIsImEiOiJjbGI1aWR0aGwwNnVpNDBxODR4OTlkaTN6In0.1QyhuNt69R4trqwBQmrgfA";
 let seenPlanIds = [];
 
 function validateFile() {

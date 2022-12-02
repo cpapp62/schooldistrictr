@@ -42,7 +42,6 @@ function datasetInfo(state) {
         units = state.unitsRecord.name,
         dataset = "";
 
-    console.dir(state);
 
     if (acsLocations.includes(place.id.toLowerCase()) || state.units.id.includes("2019") || population.name !== "Population") {
         dataset = `<p><span>&#9432;</span> ${populations.acs}`;

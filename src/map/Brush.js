@@ -32,7 +32,6 @@ export default class Brush extends HoverWithRadius {
         }];
     }
     setColor(color) {
-		console.log(color);
         this.color = parseInt(color);
     }
     startErasing() {

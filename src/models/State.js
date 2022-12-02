@@ -105,7 +105,6 @@ export default class State {
             place.id,
             place.state
         );
-        
         this.columnSets = getColumnSets(this, units);
 
         this.subscribers = [];

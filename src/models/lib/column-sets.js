@@ -26,9 +26,16 @@ import { districtColors } from "../../colors";
 export function getParts(problem) {
     let name = problem.name || "District";
     let parts = [];
-    for (let i = 0; i < problem.numberOfParts; i++) {
+	let start = 0;
+	if(problem.pluralNoun == "Middle Schools"){
+		start = 63;
+	}
+	else if(problem.pluralNoun == "High Schools"){
+		start = 81;
+	}
+    for (let i = start; i < problem.numberOfParts+start; i++) {
         let j = i % districtColors.length;
-        parts[i] = new Part(i, name, i + 1, districtColors[j]);
+        parts[i - start] = new Part(i - start, name, (i - start) + 1, districtColors[j]);
     }
     if (parts.length > districtColors.length) {
         parts.slice(1).forEach(p => {
@@ -206,7 +213,6 @@ function getVoters(place, parts) {
 }
 
 function getElections(place, parts) {
-	console.log(place);
     const elections = place.columnSets.filter(
         columnSet => columnSet.type === "election"
     );

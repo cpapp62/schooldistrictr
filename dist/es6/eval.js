@@ -8040,317 +8040,472 @@
     color: "#0099cd",
     name: "Alvey",
     capacity: 807,
-    id: "es1"
+    id: "el1"
   }, {
     color: "#ffca5d",
     name: "Antietam",
     capacity: 807,
-    id: "es2"
+    id: "el2"
   }, {
     color: "#00cd99",
     name: "Ashland",
     capacity: 807,
-    id: "es3"
+    id: "el3"
   }, {
     color: "#99cd00",
     name: "Bel Air",
     capacity: 807,
-    id: "es4"
+    id: "el4"
   }, {
     color: "#cd0099",
     name: "Belmont",
     capacity: 807,
-    id: "es5"
+    id: "el5"
   }, {
     color: "#9900cd",
     name: "Bennett",
     capacity: 807,
-    id: "es6"
+    id: "el6"
   }, {
     color: "#8dd3c7",
     name: "Bristow Run",
     capacity: 807,
-    id: "es7"
+    id: "el7"
   }, {
     color: "#bebada",
     name: "Buckland Mills",
     capacity: 807,
-    id: "es8"
+    id: "el8"
   }, {
     color: "#fb8072",
     name: "Cedar Point",
     capacity: 807,
-    id: "es9"
+    id: "el9"
   }, {
     color: "#80b1d3",
     name: "Coles",
     capacity: 807,
-    id: "es10"
+    id: "el10"
   }, {
     color: "#fdb462",
     name: "Covington-Harper",
     capacity: 807,
-    id: "es11"
+    id: "el11"
   }, {
     color: "#b3de69",
     name: "Dale City",
     capacity: 807,
-    id: "es12"
+    id: "el12"
   }, {
     color: "#fccde5",
     name: "Dumfries",
     capacity: 807,
-    id: "es13"
+    id: "el13"
   }, {
     color: "#d9d9d9",
     name: "Ellis",
     capacity: 807,
-    id: "es14"
+    id: "el14"
   }, {
     color: "#bc80bd",
     name: "Enterprise",
     capacity: 807,
-    id: "es15"
+    id: "el15"
   }, {
     color: "#ccebc5",
     name: "Featherstone",
     capacity: 807,
-    id: "es16"
+    id: "el16"
   }, {
     color: "#ffed6f",
     name: "Fitzgerald",
     capacity: 807,
-    id: "es17"
+    id: "el17"
   }, {
     color: "#ffffb3",
     name: "Glenkirk",
     capacity: 807,
-    id: "es18"
+    id: "el18"
   }, {
     color: "#a6cee3",
     name: "Gravely",
     capacity: 807,
-    id: "es19"
+    id: "el19"
   }, {
     color: "#1f78b4",
     name: "Haymarket",
     capacity: 807,
-    id: "es20"
+    id: "el20"
   }, {
     color: "#b2df8a",
     name: "Henderson",
     capacity: 807,
-    id: "es21"
+    id: "el21"
   }, {
     color: "#33a02c",
     name: "Jenkins",
     capacity: 807,
-    id: "es22"
+    id: "el22"
   }, {
     color: "#fb9a99",
     name: "Kerrydale",
     capacity: 807,
-    id: "es23"
+    id: "el23"
   }, {
     color: "#e31a1c",
     name: "Kilby",
     capacity: 807,
-    id: "es24"
+    id: "el24"
   }, {
     color: "#fdbf6f",
     name: "King",
     capacity: 807,
-    id: "es25"
+    id: "el25"
   }, {
     color: "#ff7f00",
     name: "Lake Ridge",
     capacity: 807,
-    id: "es26"
+    id: "el26"
   }, {
     color: "#cab2d6",
     name: "Leesylvania",
     capacity: 807,
-    id: "es27"
+    id: "el27"
   }, {
     color: "#6a3d9a",
     name: "Loch Lomond",
     capacity: 807,
-    id: "es28"
+    id: "el28"
   }, {
     color: "#b15928",
     name: "Marshall",
     capacity: 807,
-    id: "es29"
+    id: "el29"
   }, {
     color: "#64ffda",
     name: "Marumsco Hills",
     capacity: 807,
-    id: "es30"
+    id: "el30"
   }, {
     color: "#00B8D4",
     name: "McAuliffe",
     capacity: 807,
-    id: "es31"
+    id: "el31"
   }, {
     color: "#A1887F",
     name: "Minnieville",
     capacity: 807,
-    id: "es32"
+    id: "el32"
   }, {
     color: "#76FF03",
     name: "Montclair",
     capacity: 807,
-    id: "es33"
+    id: "el33"
   }, {
     color: "#DCE775",
     name: "Mountain View",
     capacity: 807,
-    id: "es34"
+    id: "el34"
   }, {
     color: "#B388FF",
     name: "Mullen",
     capacity: 807,
-    id: "es35"
+    id: "el35"
   }, {
     color: "#FF80AB",
     name: "Neabsco",
     capacity: 807,
-    id: "es36"
+    id: "el36"
   }, {
     color: "#D81B60",
     name: "Nokesville School, The",
     capacity: 807,
-    id: "es37"
+    id: "el37"
   }, {
     color: "#26A69A",
     name: "Occoquan",
     capacity: 807,
-    id: "es38"
+    id: "el38"
   }, {
     color: "#FFEA00",
     name: "Old Bridge",
     capacity: 807,
-    id: "es39"
+    id: "el39"
   }, {
     color: "#ffff99",
     name: "Rosa Parks",
     capacity: 807,
-    id: "es40"
+    id: "el40"
   }, {
     color: "#6200EA",
     name: "Pattie",
     capacity: 807,
-    id: "es41"
+    id: "el41"
   }, {
     color: "#62EA00",
     name: "Penn",
     capacity: 807,
-    id: "es42"
+    id: "el42"
   }, {
     color: "#EA6200",
     name: "Piney Branch",
     capacity: 807,
-    id: "es43"
+    id: "el43"
   }, {
     color: "#EA0062",
     name: "Potomac View",
     capacity: 807,
-    id: "es44"
+    id: "el44"
   }, {
     color: "#88B3FF",
     name: "River Oaks",
     capacity: 807,
-    id: "es45"
+    id: "el45"
   }, {
     color: "#FF88B3",
     name: "Rockledge",
     capacity: 807,
-    id: "es46"
+    id: "el46"
   }, {
     color: "#99ffff",
     name: "Signal Hill",
     capacity: 807,
-    id: "es47"
+    id: "el47"
   }, {
     color: "#ff99ff",
     name: "Sinclair",
     capacity: 807,
-    id: "es48"
+    id: "el48"
   }, {
     color: "#123456",
     name: "Springwoods",
     capacity: 807,
-    id: "es49"
+    id: "el49"
   }, {
     color: "#abcdef",
     name: "Sudley",
     capacity: 807,
-    id: "es50"
+    id: "el50"
   }, {
     color: "#123abc",
     name: "Swans Creek",
     capacity: 807,
-    id: "es51"
+    id: "el51"
   }, {
     color: "#abc123",
     name: "Triangle",
     capacity: 807,
-    id: "es52"
+    id: "el52"
   }, {
     color: "#B800D4",
     name: "Tyler",
     capacity: 807,
-    id: "es53"
+    id: "el53"
   }, {
     color: "#D4B800",
     name: "Vaughan",
     capacity: 807,
-    id: "es54"
+    id: "el54"
   }, {
     color: "#D400B8",
     name: "Victory",
     capacity: 807,
-    id: "es55"
+    id: "el55"
   }, {
     color: "#887F1A",
     name: "West Gate",
     capacity: 807,
-    id: "es56"
+    id: "el56"
   }, {
     color: "#a1ce31",
     name: "Westridge",
     capacity: 807,
-    id: "es57"
+    id: "el57"
   }, {
     color: "#0f0f0f",
     name: "Mary Williams",
     capacity: 807,
-    id: "es58"
+    id: "el58"
   }, {
     color: "#f0f0f0",
     name: "Kyle Wilson",
     capacity: 807,
-    id: "es59"
+    id: "el59"
   }, {
     color: "#987654",
     name: "T. Clay Wood",
     capacity: 807,
-    id: "es60"
+    id: "el60"
   }, {
     color: "#456789",
     name: "Yorkshire",
     capacity: 807,
-    id: "es61"
+    id: "el61"
   }, {
     color: "#cd1a2b",
     name: "Chris Yung",
     capacity: 807,
-    id: "es62"
+    id: "el62"
   }, {
     color: "#f8c5a2",
     name: "Rosemount Lewis",
     capacity: 807,
-    id: "es63"
+    id: "el63"
+  }, {
+    color: "#0099cd",
+    name: "Benton",
+    capacity: 807,
+    id: "mi1"
+  }, {
+    color: "#ffca5d",
+    name: "Beville",
+    capacity: 807,
+    id: "mi2"
+  }, {
+    color: "#00cd99",
+    name: "Bull Run",
+    capacity: 807,
+    id: "mi3"
+  }, {
+    color: "#99cd00",
+    name: "Gainesville",
+    capacity: 807,
+    id: "mi4"
+  }, {
+    color: "#cd0099",
+    name: "Graham Park",
+    capacity: 807,
+    id: "mi5"
+  }, {
+    color: "#9900cd",
+    name: "Hampton",
+    capacity: 807,
+    id: "mi6"
+  }, {
+    color: "#8dd3c7",
+    name: "Lake Ridge",
+    capacity: 807,
+    id: "mi7"
+  }, {
+    color: "#bebada",
+    name: "Lynn",
+    capacity: 807,
+    id: "mi8"
+  }, {
+    color: "#fb8072",
+    name: "Marsteller",
+    capacity: 807,
+    id: "mi9"
+  }, {
+    color: "#80b1d3",
+    name: "The Nokesville School",
+    capacity: 807,
+    id: "mi10"
+  }, {
+    color: "#fdb462",
+    name: "Parkside",
+    capacity: 807,
+    id: "mi11"
+  }, {
+    color: "#b3de69",
+    name: "Potomac",
+    capacity: 807,
+    id: "mi12"
+  }, {
+    color: "#fccde5",
+    name: "Potomac Shores",
+    capacity: 807,
+    id: "mi13"
+  }, {
+    color: "#d9d9d9",
+    name: "Reagan",
+    capacity: 807,
+    id: "mi14"
+  }, {
+    color: "#bc80bd",
+    name: "Rippon",
+    capacity: 807,
+    id: "mi15"
+  }, {
+    color: "#ccebc5",
+    name: "Saunders",
+    capacity: 807,
+    id: "mi16"
+  }, {
+    color: "#ffed6f",
+    name: "Unity Braxton",
+    capacity: 807,
+    id: "mi17"
+  }, {
+    color: "#ffffb3",
+    name: "Woodbridge",
+    capacity: 807,
+    id: "mi18"
+  }, {
+    color: "#0099cd",
+    name: "Battlefield",
+    capacity: 807,
+    id: "hi1"
+  }, {
+    color: "#ffca5d",
+    name: "Brentsville",
+    capacity: 807,
+    id: "hi2"
+  }, {
+    color: "#00cd99",
+    name: "Colgan",
+    capacity: 807,
+    id: "hi3"
+  }, {
+    color: "#99cd00",
+    name: "Forest Park",
+    capacity: 807,
+    id: "hi4"
+  }, {
+    color: "#cd0099",
+    name: "Freedom",
+    capacity: 807,
+    id: "hi5"
+  }, {
+    color: "#9900cd",
+    name: "Gainesville",
+    capacity: 807,
+    id: "hi6"
+  }, {
+    color: "#8dd3c7",
+    name: "Gar-Field",
+    capacity: 807,
+    id: "hi7"
+  }, {
+    color: "#bebada",
+    name: "Hylton",
+    capacity: 807,
+    id: "hi8"
+  }, {
+    color: "#fb8072",
+    name: "Osbourn Park",
+    capacity: 807,
+    id: "hi9"
+  }, {
+    color: "#80b1d3",
+    name: "Patriot",
+    capacity: 807,
+    id: "hi10"
+  }, {
+    color: "#fdb462",
+    name: "Potomac",
+    capacity: 807,
+    id: "hi11"
+  }, {
+    color: "#b3de69",
+    name: "Unity Reed",
+    capacity: 807,
+    id: "hi12"
+  }, {
+    color: "#fccde5",
+    name: "Woodbridge",
+    capacity: 807,
+    id: "hi13"
   }];
 
   _colorScheme.push.apply(_colorScheme, _toConsumableArray(_colorScheme.map(function (hex) {
@@ -8418,7 +8573,7 @@
 
   function getUnitColorProperty(parts) {
     var unitColorStyle = ["match", ["feature-state", "color"]].concat(_toConsumableArray(parts.map(function (part) {
-      return [part.id, part.color];
+      return [part.id, part.color.color];
     }).reduce(function (list, pair) {
       return [].concat(_toConsumableArray(list), _toConsumableArray(pair));
     })), ["rgba(0, 0, 0, 0)"]);
@@ -8777,7 +8932,7 @@
     return Layer;
   }();
 
-  mapboxGl.accessToken = "pk.eyJ1IjoiZGlzdHJpY3RyIiwiYSI6ImNqbjUzMTE5ZTBmcXgzcG81ZHBwMnFsOXYifQ.8HRRLKHEJA0AismGk2SX2g";
+  mapboxGl.accessToken = "pk.eyJ1IjoiY3BhcHA2MSIsImEiOiJjbGI1aWR0aGwwNnVpNDBxODR4OTlkaTN6In0.1QyhuNt69R4trqwBQmrgfA";
   var MapState =
   /**
    * @constructor
@@ -8801,6 +8956,14 @@
       dragPan: true,
       touchZoomRotate: true
     }, options));
+    /*this.map = new Map({
+    	container: mapContainer,
+    	style: mapStyle,
+    	center: [-86.0, 37.83],
+    	zoom: 3,
+    	//basemap: "arcgis-light-gray"
+    });*/
+
     this.nav = new mapboxGl.NavigationControl();
     this.map.addControl(this.nav, "top-left");
     this.mapboxgl = mapboxGl;
@@ -8815,9 +8978,10 @@
    */
 
   function addBaseUnits(map, parts, tileset, layerAdder) {
+    console.log(tileset.source);
     var units = new Layer(map, {
-      id: tileset.sourceLayer,
-      source: tileset.sourceLayer,
+      id: tileset.id,
+      source: tileset.source,
       "source-layer": tileset.sourceLayer,
       type: "fill",
       paint: {
@@ -8826,9 +8990,9 @@
       }
     }, layerAdder);
     var unitsBorders = new Layer(map, {
-      id: tileset.sourceLayer + "-borders",
+      id: tileset.id + "-border",
       type: "line",
-      source: tileset.sourceLayer,
+      source: tileset.source,
       "source-layer": tileset.sourceLayer,
       paint: unitBordersPaintProperty
     }, layerAdder);
@@ -8843,7 +9007,7 @@
    * @param {Object} tileset districtr-interpretable tileset specification.
    * @param {Function} layerAdder How do we add stuff?
    * @returns {Layer} districtr Layer object.
-   */
+  */
 
 
   function addPoints(map, tileset, layerAdder) {
@@ -8867,7 +9031,7 @@
    * @param {Object[]} tilesets districtr-interpretable tileset specifications.
    * @param {String} stateName How do we add stuff?
    * @returns {[Object, Object]} Pair of Layer objects corresponding to precincts.
-   */
+  */
 
 
   function addPrecincts(map, tilesets, stateName) {
@@ -8922,7 +9086,7 @@
   function addTracts(map, tilesets, stateName) {
     // Create a list of exceptions which require the loading of block group tilesets
     // rather than precinct or tract tilesets.
-    var exceptions = ["sacramento", "ca_sonoma", "ca_pasadena", "ca_santabarbara", "ca_goleta", "ca_marin", "ca_kings", "ca_merced", "ca_fresno", "ca_nevada", "ca_marina", "ca_arroyo", "ca_sm_county", "ca_sanbenito", "ca_cvista", "ca_bellflower", "ca_camarillo", "ca_fresno_ci", "ca_campbell", "ca_chino", "ca_fremont", "lake_el", "ca_vallejo", "ca_buellton", "ca_oceano", "ca_grover", "buenapark", "ca_stockton", "halfmoon", "ca_carlsbad", "ca_richmond", "elcajon", "laverne", "encinitas", "lodi", "pomona", "sunnyvale", "glendaleaz", "yuma", "yuma_awc", "ca_glendora", "san_dimas", "ca_santabarbara", "ca_marin", "ca_kings", "ca_merced", "ca_fresno", "ca_sm_county", "ca_sanbenito", "laverne", "ca_glendora", "san_dimas", "anaheim", "arcadia", "la_mirada", "placentia", "lakewood", "san_bruno", "ca_santabarbara", "ca_marin", "ca_kings", "ca_merced", "ca_fresno", "ca_sm_county", "ca_sanbenito", "laverne", "ca_poway", "ca_torrance", "29palms", "navajoco", "yuba_city", "buena_park"],
+    var exceptions = [],
         isException = exceptions.includes(stateName),
         hasCountyFilter = spatial_abilities(stateName).county_filter,
         tileType,
@@ -8938,8 +9102,8 @@
     return new Layer(map, {
       id: "extra-tracts",
       type: "fill",
-      source: tileset.sourceLayer,
-      "source-layer": tileset.sourceLayer,
+      source: "./assets/shapefiles/PZ" + tileset.year.substr(2, 3) + ".shp",
+      "source-layer": "./assets/shapefiles/PZ" + tileset.year.substr(2, 3) + ".shp",
       paint: {
         "fill-opacity": 0
       }
@@ -8956,6 +9120,7 @@
 
 
   function addCounties(map, tileset, layerAdder, placeID) {
+    console.log(placeID);
     map.addSource(tileset.sourceLayer, tileset.source);
     return new Layer(map, {
       id: "county-hover",
@@ -8985,8 +9150,8 @@
     return new Layer(map, {
       id: "extra-bgs",
       type: "fill",
-      source: tileset.sourceLayer,
-      "source-layer": tileset.sourceLayer,
+      source: "./assets/shapefiles/PZ" + tileset.year.substr(2, 3) + ".shp",
+      "source-layer": "./assets/shapefiles/PZ" + tileset.year.substr(2, 3) + ".shp",
       background: true,
       paint: {
         "fill-opacity": 0
@@ -9037,7 +9202,7 @@
     try {
       for (_iterator.s(); !(_step = _iterator.n()).done;) {
         var tileset = _step.value;
-        map.addSource(tileset.sourceLayer, tileset.source);
+        map.addSource("./assets/shapefiles/PZ" + tileset.year.substr(2, 3) + ".shp", tileset.source);
       } // Create a new Layer for the cluster units, if the cluster unit tileset is
       // specified (per utils.js); also add the lines for this layer.
 
@@ -9156,20 +9321,16 @@
           "line-width": 1.5
         }
       });
-      /*
-      new Layer(
-      map,{
-      id: "city_border_poly",
-      source: "city_border_poly",
-      type: "fill",
-      paint: {
-      "fill-color": "#444",
-      "fill-opacity": 0.3
-      }
-      }
-      );
-       */
 
+      new Layer(map, {
+        id: "city_border_poly",
+        source: "city_border_poly",
+        type: "fill",
+        paint: {
+          "fill-color": "#444",
+          "fill-opacity": 0.3
+        }
+      });
     });
   }
   /**
@@ -9194,6 +9355,7 @@
     try {
       for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
         var tileset = _step2.value;
+        console.log(tileset);
         map.addSource(tileset.sourceLayer, tileset.source);
       } // Add base units to the map.
 
@@ -9971,10 +10133,17 @@
   function getParts(problem) {
     var name = problem.name || "District";
     var parts = [];
+    var start = 0;
 
-    for (var i = 0; i < problem.numberOfParts; i++) {
+    if (problem.pluralNoun == "Middle Schools") {
+      start = 63;
+    } else if (problem.pluralNoun == "High Schools") {
+      start = 81;
+    }
+
+    for (var i = start; i < problem.numberOfParts + start; i++) {
       var j = i % districtColors.length;
-      parts[i] = new Part(i, name, i + 1, districtColors[j]);
+      parts[i - start] = new Part(i - start, name, i - start + 1, districtColors[j]);
     }
 
     if (parts.length > districtColors.length) {
@@ -10195,7 +10364,6 @@
   }
 
   function getElections(place, parts) {
-    console.log(place);
     var elections = place.columnSets.filter(function (columnSet) {
       return columnSet.type === "election";
     });
@@ -10660,7 +10828,6 @@
         acsLocations = ["wisco2019acs", "hall_ga", "grand_county_2", "mn2020acs", "nd_benson", "nd_dunn", "nd_mckenzie", "nd_mountrail", "nd_ramsey", "nd_rollette", "nd_sioux", "contracosta"],
         units = state.unitsRecord.name,
         dataset = "";
-    console.dir(state);
 
     if (acsLocations.includes(place.id.toLowerCase()) || state.units.id.includes("2019") || population.name !== "Population") {
       dataset = "<p><span>&#9432;</span> ".concat(populations.acs);

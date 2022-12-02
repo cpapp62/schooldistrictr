@@ -32,9 +32,10 @@ export default function NumberMarkers(state, brush) {
         // IE helper
         return { update: () => {} };
     }
-
+	console.log(state.problem.numberOfParts);
     while (i < state.problem.numberOfParts) {
         districts.push(i);
+		console.log(i);
         i++;
     }
     districts.forEach((dnum) => {
@@ -62,7 +63,7 @@ export default function NumberMarkers(state, brush) {
 
         ctx.fillStyle = colorScheme[dnum % colorScheme.length];
         ctx.fillText(numtxt, 22 - numwidth, 32);
-
+		console.log("number_source_" + dnum);
         map.addSource("number_source_" + dnum, {
             type: "geojson",
             data: { type: "FeatureCollection", features: [] }

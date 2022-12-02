@@ -425,7 +425,7 @@
                         "type": "fill",
                         "source": {
                             "type": "geojson",
-                            "data": "https://studio.mapbox.com/datasets/cpapp61/clb5cddc700tg2dm5deiabght/edit/"
+                            "data": "https://studio.mapbox.com/tilesets/cpapp61.4g1pu4l4"
                         },
                         "sourceLayer": "PZ23",
 						"year": "2023"

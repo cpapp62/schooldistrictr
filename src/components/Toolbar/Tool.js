@@ -12,7 +12,9 @@ export default class Tool {
         this.active = true;
         try {
             document.getElementById(`tool-${this.id}`).checked = true;
-        } catch(e) { }
+        } catch(e) {
+			console.log(e);
+		}
     }
     deactivate() {
         this.active = false;

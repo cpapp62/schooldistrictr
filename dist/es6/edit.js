@@ -1990,500 +1990,976 @@
 
   });
 
+  /* Copyright (c) 2022 Environmental Systems Research Institute, Inc.
+   * Apache-2.0 */
+  var isBrowser = typeof window !== 'undefined';
+  // allow consuming libraries to provide their own Promise implementations
+  var utils = {
+      Promise: isBrowser ? window['Promise'] : undefined
+  };
+
+  /* Copyright (c) 2022 Environmental Systems Research Institute, Inc.
+   * Apache-2.0 */
+  var DEFAULT_VERSION = '4.25';
+  var NEXT = 'next';
+  function parseVersion(version) {
+      if (version.toLowerCase() === NEXT) {
+          return NEXT;
+      }
+      var match = version && version.match(/^(\d)\.(\d+)/);
+      return match && {
+          major: parseInt(match[1], 10),
+          minor: parseInt(match[2], 10)
+      };
+  }
   /**
-   * Global Districtr color map for districts.
+   * Get the CDN url for a given version
    *
-   * We might consider using fewer colors and just allowing repetitions,
-   * since a human being can only hold so many colors in their head at
-   * one time.
+   * @param version Ex: '4.25' or '3.42'. Defaults to the latest 4.x version.
    */
-  var _colorScheme = [{
-    color: "#0099cd",
-    name: "Alvey",
-    capacity: 807,
-    id: "el1"
-  }, {
-    color: "#ffca5d",
-    name: "Antietam",
-    capacity: 807,
-    id: "el2"
-  }, {
-    color: "#00cd99",
-    name: "Ashland",
-    capacity: 807,
-    id: "el3"
-  }, {
-    color: "#99cd00",
-    name: "Bel Air",
-    capacity: 807,
-    id: "el4"
-  }, {
-    color: "#cd0099",
-    name: "Belmont",
-    capacity: 807,
-    id: "el5"
-  }, {
-    color: "#9900cd",
-    name: "Bennett",
-    capacity: 807,
-    id: "el6"
-  }, {
-    color: "#8dd3c7",
-    name: "Bristow Run",
-    capacity: 807,
-    id: "el7"
-  }, {
-    color: "#bebada",
-    name: "Buckland Mills",
-    capacity: 807,
-    id: "el8"
-  }, {
-    color: "#fb8072",
-    name: "Cedar Point",
-    capacity: 807,
-    id: "el9"
-  }, {
-    color: "#80b1d3",
-    name: "Coles",
-    capacity: 807,
-    id: "el10"
-  }, {
-    color: "#fdb462",
-    name: "Covington-Harper",
-    capacity: 807,
-    id: "el11"
-  }, {
-    color: "#b3de69",
-    name: "Dale City",
-    capacity: 807,
-    id: "el12"
-  }, {
-    color: "#fccde5",
-    name: "Dumfries",
-    capacity: 807,
-    id: "el13"
-  }, {
-    color: "#d9d9d9",
-    name: "Ellis",
-    capacity: 807,
-    id: "el14"
-  }, {
-    color: "#bc80bd",
-    name: "Enterprise",
-    capacity: 807,
-    id: "el15"
-  }, {
-    color: "#ccebc5",
-    name: "Featherstone",
-    capacity: 807,
-    id: "el16"
-  }, {
-    color: "#ffed6f",
-    name: "Fitzgerald",
-    capacity: 807,
-    id: "el17"
-  }, {
-    color: "#ffffb3",
-    name: "Glenkirk",
-    capacity: 807,
-    id: "el18"
-  }, {
-    color: "#a6cee3",
-    name: "Gravely",
-    capacity: 807,
-    id: "el19"
-  }, {
-    color: "#1f78b4",
-    name: "Haymarket",
-    capacity: 807,
-    id: "el20"
-  }, {
-    color: "#b2df8a",
-    name: "Henderson",
-    capacity: 807,
-    id: "el21"
-  }, {
-    color: "#33a02c",
-    name: "Jenkins",
-    capacity: 807,
-    id: "el22"
-  }, {
-    color: "#fb9a99",
-    name: "Kerrydale",
-    capacity: 807,
-    id: "el23"
-  }, {
-    color: "#e31a1c",
-    name: "Kilby",
-    capacity: 807,
-    id: "el24"
-  }, {
-    color: "#fdbf6f",
-    name: "King",
-    capacity: 807,
-    id: "el25"
-  }, {
-    color: "#ff7f00",
-    name: "Lake Ridge",
-    capacity: 807,
-    id: "el26"
-  }, {
-    color: "#cab2d6",
-    name: "Leesylvania",
-    capacity: 807,
-    id: "el27"
-  }, {
-    color: "#6a3d9a",
-    name: "Loch Lomond",
-    capacity: 807,
-    id: "el28"
-  }, {
-    color: "#b15928",
-    name: "Marshall",
-    capacity: 807,
-    id: "el29"
-  }, {
-    color: "#64ffda",
-    name: "Marumsco Hills",
-    capacity: 807,
-    id: "el30"
-  }, {
-    color: "#00B8D4",
-    name: "McAuliffe",
-    capacity: 807,
-    id: "el31"
-  }, {
-    color: "#A1887F",
-    name: "Minnieville",
-    capacity: 807,
-    id: "el32"
-  }, {
-    color: "#76FF03",
-    name: "Montclair",
-    capacity: 807,
-    id: "el33"
-  }, {
-    color: "#DCE775",
-    name: "Mountain View",
-    capacity: 807,
-    id: "el34"
-  }, {
-    color: "#B388FF",
-    name: "Mullen",
-    capacity: 807,
-    id: "el35"
-  }, {
-    color: "#FF80AB",
-    name: "Neabsco",
-    capacity: 807,
-    id: "el36"
-  }, {
-    color: "#D81B60",
-    name: "Nokesville School, The",
-    capacity: 807,
-    id: "el37"
-  }, {
-    color: "#26A69A",
-    name: "Occoquan",
-    capacity: 807,
-    id: "el38"
-  }, {
-    color: "#FFEA00",
-    name: "Old Bridge",
-    capacity: 807,
-    id: "el39"
-  }, {
-    color: "#ffff99",
-    name: "Rosa Parks",
-    capacity: 807,
-    id: "el40"
-  }, {
-    color: "#6200EA",
-    name: "Pattie",
-    capacity: 807,
-    id: "el41"
-  }, {
-    color: "#62EA00",
-    name: "Penn",
-    capacity: 807,
-    id: "el42"
-  }, {
-    color: "#EA6200",
-    name: "Piney Branch",
-    capacity: 807,
-    id: "el43"
-  }, {
-    color: "#EA0062",
-    name: "Potomac View",
-    capacity: 807,
-    id: "el44"
-  }, {
-    color: "#88B3FF",
-    name: "River Oaks",
-    capacity: 807,
-    id: "el45"
-  }, {
-    color: "#FF88B3",
-    name: "Rockledge",
-    capacity: 807,
-    id: "el46"
-  }, {
-    color: "#99ffff",
-    name: "Signal Hill",
-    capacity: 807,
-    id: "el47"
-  }, {
-    color: "#ff99ff",
-    name: "Sinclair",
-    capacity: 807,
-    id: "el48"
-  }, {
-    color: "#123456",
-    name: "Springwoods",
-    capacity: 807,
-    id: "el49"
-  }, {
-    color: "#abcdef",
-    name: "Sudley",
-    capacity: 807,
-    id: "el50"
-  }, {
-    color: "#123abc",
-    name: "Swans Creek",
-    capacity: 807,
-    id: "el51"
-  }, {
-    color: "#abc123",
-    name: "Triangle",
-    capacity: 807,
-    id: "el52"
-  }, {
-    color: "#B800D4",
-    name: "Tyler",
-    capacity: 807,
-    id: "el53"
-  }, {
-    color: "#D4B800",
-    name: "Vaughan",
-    capacity: 807,
-    id: "el54"
-  }, {
-    color: "#D400B8",
-    name: "Victory",
-    capacity: 807,
-    id: "el55"
-  }, {
-    color: "#887F1A",
-    name: "West Gate",
-    capacity: 807,
-    id: "el56"
-  }, {
-    color: "#a1ce31",
-    name: "Westridge",
-    capacity: 807,
-    id: "el57"
-  }, {
-    color: "#0f0f0f",
-    name: "Mary Williams",
-    capacity: 807,
-    id: "el58"
-  }, {
-    color: "#f0f0f0",
-    name: "Kyle Wilson",
-    capacity: 807,
-    id: "el59"
-  }, {
-    color: "#987654",
-    name: "T. Clay Wood",
-    capacity: 807,
-    id: "el60"
-  }, {
-    color: "#456789",
-    name: "Yorkshire",
-    capacity: 807,
-    id: "el61"
-  }, {
-    color: "#cd1a2b",
-    name: "Chris Yung",
-    capacity: 807,
-    id: "el62"
-  }, {
-    color: "#f8c5a2",
-    name: "Rosemount Lewis",
-    capacity: 807,
-    id: "el63"
-  }, {
-    color: "#0099cd",
-    name: "Benton",
-    capacity: 807,
-    id: "mi1"
-  }, {
-    color: "#ffca5d",
-    name: "Beville",
-    capacity: 807,
-    id: "mi2"
-  }, {
-    color: "#00cd99",
-    name: "Bull Run",
-    capacity: 807,
-    id: "mi3"
-  }, {
-    color: "#99cd00",
-    name: "Gainesville",
-    capacity: 807,
-    id: "mi4"
-  }, {
-    color: "#cd0099",
-    name: "Graham Park",
-    capacity: 807,
-    id: "mi5"
-  }, {
-    color: "#9900cd",
-    name: "Hampton",
-    capacity: 807,
-    id: "mi6"
-  }, {
-    color: "#8dd3c7",
-    name: "Lake Ridge",
-    capacity: 807,
-    id: "mi7"
-  }, {
-    color: "#bebada",
-    name: "Lynn",
-    capacity: 807,
-    id: "mi8"
-  }, {
-    color: "#fb8072",
-    name: "Marsteller",
-    capacity: 807,
-    id: "mi9"
-  }, {
-    color: "#80b1d3",
-    name: "The Nokesville School",
-    capacity: 807,
-    id: "mi10"
-  }, {
-    color: "#fdb462",
-    name: "Parkside",
-    capacity: 807,
-    id: "mi11"
-  }, {
-    color: "#b3de69",
-    name: "Potomac",
-    capacity: 807,
-    id: "mi12"
-  }, {
-    color: "#fccde5",
-    name: "Potomac Shores",
-    capacity: 807,
-    id: "mi13"
-  }, {
-    color: "#d9d9d9",
-    name: "Reagan",
-    capacity: 807,
-    id: "mi14"
-  }, {
-    color: "#bc80bd",
-    name: "Rippon",
-    capacity: 807,
-    id: "mi15"
-  }, {
-    color: "#ccebc5",
-    name: "Saunders",
-    capacity: 807,
-    id: "mi16"
-  }, {
-    color: "#ffed6f",
-    name: "Unity Braxton",
-    capacity: 807,
-    id: "mi17"
-  }, {
-    color: "#ffffb3",
-    name: "Woodbridge",
-    capacity: 807,
-    id: "mi18"
-  }, {
-    color: "#0099cd",
-    name: "Battlefield",
-    capacity: 807,
-    id: "hi1"
-  }, {
-    color: "#ffca5d",
-    name: "Brentsville",
-    capacity: 807,
-    id: "hi2"
-  }, {
-    color: "#00cd99",
-    name: "Colgan",
-    capacity: 807,
-    id: "hi3"
-  }, {
-    color: "#99cd00",
-    name: "Forest Park",
-    capacity: 807,
-    id: "hi4"
-  }, {
-    color: "#cd0099",
-    name: "Freedom",
-    capacity: 807,
-    id: "hi5"
-  }, {
-    color: "#9900cd",
-    name: "Gainesville",
-    capacity: 807,
-    id: "hi6"
-  }, {
-    color: "#8dd3c7",
-    name: "Gar-Field",
-    capacity: 807,
-    id: "hi7"
-  }, {
-    color: "#bebada",
-    name: "Hylton",
-    capacity: 807,
-    id: "hi8"
-  }, {
-    color: "#fb8072",
-    name: "Osbourn Park",
-    capacity: 807,
-    id: "hi9"
-  }, {
-    color: "#80b1d3",
-    name: "Patriot",
-    capacity: 807,
-    id: "hi10"
-  }, {
-    color: "#fdb462",
-    name: "Potomac",
-    capacity: 807,
-    id: "hi11"
-  }, {
-    color: "#b3de69",
-    name: "Unity Reed",
-    capacity: 807,
-    id: "hi12"
-  }, {
-    color: "#fccde5",
-    name: "Woodbridge",
-    capacity: 807,
-    id: "hi13"
-  }];
-
-  _colorScheme.push.apply(_colorScheme, _toConsumableArray(_colorScheme.map(function (hex) {
-    return changeColorLuminance(hex, -0.3);
-  })));
+  function getCdnUrl(version) {
+      if (version === void 0) { version = DEFAULT_VERSION; }
+      return "https://js.arcgis.com/".concat(version, "/");
+  }
   /**
-   * District color scheme.
+   * Get the CDN url for a the CSS for a given version and/or theme
+   *
+   * @param version Ex: '4.25', '3.42', or 'next'. Defaults to the latest 4.x version.
    */
+  function getCdnCssUrl(version) {
+      if (version === void 0) { version = DEFAULT_VERSION; }
+      var baseUrl = getCdnUrl(version);
+      var parsedVersion = parseVersion(version);
+      if (parsedVersion !== NEXT && parsedVersion.major === 3) {
+          // NOTE: at 3.11 the CSS moved from the /js folder to the root
+          var path = parsedVersion.minor <= 10 ? 'js/' : '';
+          return "".concat(baseUrl).concat(path, "esri/css/esri.css");
+      }
+      else {
+          // assume 4.x
+          return "".concat(baseUrl, "esri/themes/light/main.css");
+      }
+  }
+
+  /* Copyright (c) 2022 Environmental Systems Research Institute, Inc.
+   * Apache-2.0 */
+  function createStylesheetLink(href) {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href;
+      return link;
+  }
+  function insertLink(link, before) {
+      if (before) {
+          // the link should be inserted before a specific node
+          var beforeNode = document.querySelector(before);
+          beforeNode.parentNode.insertBefore(link, beforeNode);
+      }
+      else {
+          // append the link to then end of the head tag
+          document.head.appendChild(link);
+      }
+  }
+  // check if the css url has been injected or added manually
+  function getCss(url) {
+      return document.querySelector("link[href*=\"".concat(url, "\"]"));
+  }
+  function getCssUrl(urlOrVersion) {
+      return !urlOrVersion || parseVersion(urlOrVersion)
+          // if it's a valid version string return the CDN URL
+          ? getCdnCssUrl(urlOrVersion)
+          // otherwise assume it's a URL and return that
+          : urlOrVersion;
+  }
+  // lazy load the CSS needed for the ArcGIS API
+  function loadCss(urlOrVersion, before) {
+      var url = getCssUrl(urlOrVersion);
+      var link = getCss(url);
+      if (!link) {
+          // create & load the css link
+          link = createStylesheetLink(url);
+          insertLink(link, before);
+      }
+      return link;
+  }
+
+  /* Copyright (c) 2022 Environmental Systems Research Institute, Inc.
+   * Apache-2.0 */
+  var defaultOptions = {};
+  function createScript(url) {
+      var script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = url;
+      script.setAttribute('data-esri-loader', 'loading');
+      return script;
+  }
+  // add a one-time load handler to script
+  // and optionally add a one time error handler as well
+  function handleScriptLoad(script, callback, errback) {
+      var onScriptError;
+      if (errback) {
+          // set up an error handler as well
+          onScriptError = handleScriptError(script, errback);
+      }
+      var onScriptLoad = function () {
+          // pass the script to the callback
+          callback(script);
+          // remove this event listener
+          script.removeEventListener('load', onScriptLoad, false);
+          if (onScriptError) {
+              // remove the error listener as well
+              script.removeEventListener('error', onScriptError, false);
+          }
+      };
+      script.addEventListener('load', onScriptLoad, false);
+  }
+  // add a one-time error handler to the script
+  function handleScriptError(script, callback) {
+      var onScriptError = function (e) {
+          // reject the promise and remove this event listener
+          callback(e.error || new Error("There was an error attempting to load ".concat(script.src)));
+          // remove this event listener
+          script.removeEventListener('error', onScriptError, false);
+      };
+      script.addEventListener('error', onScriptError, false);
+      return onScriptError;
+  }
+  // get the script injected by this library
+  function getScript() {
+      return document.querySelector('script[data-esri-loader]');
+  }
+  // has ArcGIS API been loaded on the page yet?
+  function isLoaded() {
+      var globalRequire = window['require'];
+      // .on() ensures that it's Dojo's AMD loader
+      return globalRequire && globalRequire.on;
+  }
+  // load the ArcGIS API on the page
+  function loadScript(options) {
+      if (options === void 0) { options = {}; }
+      // we would have liked to use spread like { ...defaultOptions, ...options }
+      // but TS would inject a polyfill that would require use to configure rollup w content: 'window'
+      // if we have another occasion to use spread, let's do that and replace this for...in
+      var opts = {};
+      [defaultOptions, options].forEach(function (obj) {
+          for (var prop in obj) {
+              if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+                  opts[prop] = obj[prop];
+              }
+          }
+      });
+      // URL to load
+      var version = opts.version;
+      var url = opts.url || getCdnUrl(version);
+      return new utils.Promise(function (resolve, reject) {
+          var script = getScript();
+          if (script) {
+              // the API is already loaded or in the process of loading...
+              // NOTE: have to test against scr attribute value, not script.src
+              // b/c the latter will return the full url for relative paths
+              var src = script.getAttribute('src');
+              if (src !== url) {
+                  // potentially trying to load a different version of the API
+                  reject(new Error("The ArcGIS API for JavaScript is already loaded (".concat(src, ").")));
+              }
+              else {
+                  if (isLoaded()) {
+                      // the script has already successfully loaded
+                      resolve(script);
+                  }
+                  else {
+                      // wait for the script to load and then resolve
+                      handleScriptLoad(script, resolve, reject);
+                  }
+              }
+          }
+          else {
+              if (isLoaded()) {
+                  // the API has been loaded by some other means
+                  // potentially trying to load a different version of the API
+                  reject(new Error("The ArcGIS API for JavaScript is already loaded."));
+              }
+              else {
+                  // this is the first time attempting to load the API
+                  var css = opts.css;
+                  if (css) {
+                      var useVersion = css === true;
+                      // load the css before loading the script
+                      loadCss(useVersion ? version : css, opts.insertCssBefore);
+                  }
+                  // create a script object whose source points to the API
+                  script = createScript(url);
+                  // _currentUrl = url;
+                  // once the script is loaded...
+                  handleScriptLoad(script, function () {
+                      // update the status of the script
+                      script.setAttribute('data-esri-loader', 'loaded');
+                      // return the script
+                      resolve(script);
+                  }, reject);
+                  // load the script
+                  document.body.appendChild(script);
+              }
+          }
+      });
+  }
+
+  /* Copyright (c) 2022 Environmental Systems Research Institute, Inc.
+   * Apache-2.0 */
+  // wrap Dojo's require() in a promise
+  function requireModules(modules) {
+      return new utils.Promise(function (resolve, reject) {
+          // If something goes wrong loading the esri/dojo scripts, reject with the error.
+          var errorHandler = window['require'].on('error', reject);
+          window['require'](modules, function () {
+              var args = [];
+              for (var _i = 0; _i < arguments.length; _i++) {
+                  args[_i] = arguments[_i];
+              }
+              // remove error handler
+              errorHandler.remove();
+              // Resolve with the parameters from dojo require as an array.
+              resolve(args);
+          });
+      });
+  }
+  // returns a promise that resolves with an array of the required modules
+  // also will attempt to lazy load the ArcGIS API if it has not already been loaded
+  function loadModules(modules, loadScriptOptions) {
+      if (loadScriptOptions === void 0) { loadScriptOptions = {}; }
+      if (!isLoaded()) {
+          // script is not yet loaded, is it in the process of loading?
+          var script = getScript();
+          var src = script && script.getAttribute('src');
+          if (!loadScriptOptions.url && src) {
+              // script is still loading and user did not specify a URL
+              // in this case we want to default to the URL that's being loaded
+              // instead of defaulting to the latest 4.x URL
+              loadScriptOptions.url = src;
+          }
+          // attempt to load the script then load the modules
+          return loadScript(loadScriptOptions).then(function () { return requireModules(modules); });
+      }
+      else {
+          // script is already loaded, just load the modules
+          return requireModules(modules);
+      }
+  }
+
+  var colorScheme;
+  var districtColors;
+  //import query from "@arcgis/core/rest/query";
+
+  loadModules(["esri/rest/support/Query", "esri/rest/query"]).then(function (_ref) {
+    var _ref2 = _slicedToArray(_ref, 2),
+        Query = _ref2[0],
+        query = _ref2[1];
+
+    var file = "https://gis.pwcs.edu/server/rest/services/Hosted/School_Capacity_2022/FeatureServer/0";
+    var params = new Query();
+    params.returnGeometry = false;
+    params.outFields = ["school_name_3", "cap"];
+    params.where = 'school_type_name IS NOT NULL';
+    query.executeQueryJSON(file, params).then(function (results) {
+      var schools = {};
+
+      for (var i = 0; i < results.features.length; i++) {
+        schools["".concat(results.features[i].attributes.school_name_3)] = results.features[i].attributes.cap;
+      }
+
+      var _colorScheme = [{
+        color: "#0099cd",
+        name: "Alvey",
+        capacity: {
+          "2022": schools["Alvey"]
+        },
+        id: "el1"
+      }, {
+        color: "#ffca5d",
+        name: "Antietam",
+        capacity: {
+          "2022": schools["Antietam"]
+        },
+        id: "el2"
+      }, {
+        color: "#00cd99",
+        name: "Ashland",
+        capacity: {
+          "2022": schools["Ashland"]
+        },
+        id: "el3"
+      }, {
+        color: "#99cd00",
+        name: "Bel Air",
+        capacity: {
+          "2022": schools["Bel Air"]
+        },
+        id: "el4"
+      }, {
+        color: "#cd0099",
+        name: "Belmont",
+        capacity: {
+          "2022": schools["Belmont"]
+        },
+        id: "el5"
+      }, {
+        color: "#9900cd",
+        name: "Bennett",
+        capacity: {
+          "2022": schools["Bennett"]
+        },
+        id: "el6"
+      }, {
+        color: "#8dd3c7",
+        name: "Bristow Run",
+        capacity: {
+          "2022": schools["Bristow Run"]
+        },
+        id: "el7"
+      }, {
+        color: "#bebada",
+        name: "Buckland Mills",
+        capacity: {
+          "2022": schools["Buckland Mills"]
+        },
+        id: "el8"
+      }, {
+        color: "#fb8072",
+        name: "Cedar Point",
+        capacity: {
+          "2022": schools["Cedar Point"]
+        },
+        id: "el9"
+      }, {
+        color: "#80b1d3",
+        name: "Coles",
+        capacity: {
+          "2022": schools["Coles"]
+        },
+        id: "el10"
+      }, {
+        color: "#fdb462",
+        name: "Covington-Harper",
+        capacity: {
+          "2022": schools["Covington-Harper"]
+        },
+        id: "el11"
+      }, {
+        color: "#b3de69",
+        name: "Dale City",
+        capacity: {
+          "2022": schools["Dale City"]
+        },
+        id: "el12"
+      }, {
+        color: "#fccde5",
+        name: "Dumfries",
+        capacity: {
+          "2022": schools["Dumfries"]
+        },
+        id: "el13"
+      }, {
+        color: "#d9d9d9",
+        name: "Ellis",
+        capacity: {
+          "2022": schools["Ellis"]
+        },
+        id: "el14"
+      }, {
+        color: "#bc80bd",
+        name: "Enterprise",
+        capacity: {
+          "2022": schools["Enterprise"]
+        },
+        id: "el15"
+      }, {
+        color: "#ccebc5",
+        name: "Featherstone",
+        capacity: {
+          "2022": schools["Featherstone"]
+        },
+        id: "el16"
+      }, {
+        color: "#ffed6f",
+        name: "Fitzgerald",
+        capacity: {
+          "2022": schools["Fitzgerald"]
+        },
+        id: "el17"
+      }, {
+        color: "#ffffb3",
+        name: "Glenkirk",
+        capacity: {
+          "2022": schools["Glenkirk"]
+        },
+        id: "el18"
+      }, {
+        color: "#a6cee3",
+        name: "Gravely",
+        capacity: {
+          "2022": schools["Gravely"]
+        },
+        id: "el19"
+      }, {
+        color: "#1f78b4",
+        name: "Haymarket",
+        capacity: {
+          "2022": schools["Haymarket"]
+        },
+        id: "el20"
+      }, {
+        color: "#b2df8a",
+        name: "Henderson",
+        capacity: {
+          "2022": schools["Henderson"]
+        },
+        id: "el21"
+      }, {
+        color: "#33a02c",
+        name: "Jenkins",
+        capacity: {
+          "2022": schools["Jenkins"]
+        },
+        id: "el22"
+      }, {
+        color: "#fb9a99",
+        name: "Kerrydale",
+        capacity: {
+          "2022": schools["Kerrydale"]
+        },
+        id: "el23"
+      }, {
+        color: "#e31a1c",
+        name: "Kilby",
+        capacity: {
+          "2022": schools["Kilby"]
+        },
+        id: "el24"
+      }, {
+        color: "#fdbf6f",
+        name: "King",
+        capacity: {
+          "2022": schools["King"]
+        },
+        id: "el25"
+      }, {
+        color: "#ff7f00",
+        name: "Lake Ridge",
+        capacity: {
+          "2022": schools["Lake Ridge"]
+        },
+        id: "el26"
+      }, {
+        color: "#cab2d6",
+        name: "Leesylvania",
+        capacity: {
+          "2022": schools["Leesylvania"]
+        },
+        id: "el27"
+      }, {
+        color: "#6a3d9a",
+        name: "Loch Lomond",
+        capacity: {
+          "2022": schools["Loch Lomond"]
+        },
+        id: "el28"
+      }, {
+        color: "#b15928",
+        name: "Marshall",
+        capacity: {
+          "2022": schools["Marshall"]
+        },
+        id: "el29"
+      }, {
+        color: "#64ffda",
+        name: "Marumsco Hills",
+        capacity: {
+          "2022": schools["Marumsco Hills"]
+        },
+        id: "el30"
+      }, {
+        color: "#00B8D4",
+        name: "McAuliffe",
+        capacity: {
+          "2022": schools["McAuliffe"]
+        },
+        id: "el31"
+      }, {
+        color: "#A1887F",
+        name: "Minnieville",
+        capacity: {
+          "2022": schools["Minnieville"]
+        },
+        id: "el32"
+      }, {
+        color: "#76FF03",
+        name: "Montclair",
+        capacity: {
+          "2022": schools["Montclair"]
+        },
+        id: "el33"
+      }, {
+        color: "#DCE775",
+        name: "Mountain View",
+        capacity: {
+          "2022": schools["Mountain View"]
+        },
+        id: "el34"
+      }, {
+        color: "#B388FF",
+        name: "Mullen",
+        capacity: {
+          "2022": schools["Mullen"]
+        },
+        id: "el35"
+      }, {
+        color: "#FF80AB",
+        name: "Neabsco",
+        capacity: {
+          "2022": schools["Neabsco"]
+        },
+        id: "el36"
+      }, {
+        color: "#D81B60",
+        name: "Nokesville School, The",
+        capacity: {
+          "2022": schools["Nokesville School, The"]
+        },
+        id: "el37"
+      }, {
+        color: "#26A69A",
+        name: "Occoquan",
+        capacity: {
+          "2022": schools["Occoquan"]
+        },
+        id: "el38"
+      }, {
+        color: "#FFEA00",
+        name: "Old Bridge",
+        capacity: {
+          "2022": schools["Old Bridge"]
+        },
+        id: "el39"
+      }, {
+        color: "#ffff99",
+        name: "Rosa Parks",
+        capacity: {
+          "2022": schools["Rosa Parks"]
+        },
+        id: "el40"
+      }, {
+        color: "#6200EA",
+        name: "Pattie",
+        capacity: {
+          "2022": schools["Pattie"]
+        },
+        id: "el41"
+      }, {
+        color: "#62EA00",
+        name: "Penn",
+        capacity: {
+          "2022": schools["Penn"]
+        },
+        id: "el42"
+      }, {
+        color: "#EA6200",
+        name: "Piney Branch",
+        capacity: {
+          "2022": schools["Piney Branch"]
+        },
+        id: "el43"
+      }, {
+        color: "#EA0062",
+        name: "Potomac View",
+        capacity: {
+          "2022": schools["Potomac View"]
+        },
+        id: "el44"
+      }, {
+        color: "#88B3FF",
+        name: "River Oaks",
+        capacity: {
+          "2022": schools["River Oaks"]
+        },
+        id: "el45"
+      }, {
+        color: "#FF88B3",
+        name: "Rockledge",
+        capacity: {
+          "2022": schools["Rockledge"]
+        },
+        id: "el46"
+      }, {
+        color: "#99ffff",
+        name: "Signal Hill",
+        capacity: {
+          "2022": schools["Signal Hill"]
+        },
+        id: "el47"
+      }, {
+        color: "#ff99ff",
+        name: "Sinclair",
+        capacity: {
+          "2022": schools["Sinclair"]
+        },
+        id: "el48"
+      }, {
+        color: "#123456",
+        name: "Springwoods",
+        capacity: {
+          "2022": schools["Springwoods"]
+        },
+        id: "el49"
+      }, {
+        color: "#abcdef",
+        name: "Sudley",
+        capacity: {
+          "2022": schools["Sudley"]
+        },
+        id: "el50"
+      }, {
+        color: "#123abc",
+        name: "Swans Creek",
+        capacity: {
+          "2022": schools["Swans Creek"]
+        },
+        id: "el51"
+      }, {
+        color: "#abc123",
+        name: "Triangle",
+        capacity: {
+          "2022": schools["Triangle"]
+        },
+        id: "el52"
+      }, {
+        color: "#B800D4",
+        name: "Tyler",
+        capacity: {
+          "2022": schools["Tyler"]
+        },
+        id: "el53"
+      }, {
+        color: "#D4B800",
+        name: "Vaughan",
+        capacity: {
+          "2022": schools["Vaughan"]
+        },
+        id: "el54"
+      }, {
+        color: "#D400B8",
+        name: "Victory",
+        capacity: {
+          "2022": schools["Victory"]
+        },
+        id: "el55"
+      }, {
+        color: "#887F1A",
+        name: "West Gate",
+        capacity: {
+          "2022": schools["West Gate"]
+        },
+        id: "el56"
+      }, {
+        color: "#a1ce31",
+        name: "Westridge",
+        capacity: {
+          "2022": schools["Westridge"]
+        },
+        id: "el57"
+      }, {
+        color: "#0f0f0f",
+        name: "Mary Williams",
+        capacity: {
+          "2022": schools["Mary Williams"]
+        },
+        id: "el58"
+      }, {
+        color: "#f0f0f0",
+        name: "Kyle Wilson",
+        capacity: {
+          "2022": schools["Kyle Wilson"]
+        },
+        id: "el59"
+      }, {
+        color: "#987654",
+        name: "T. Clay Wood",
+        capacity: {
+          "2022": schools["T. Clay Wood"]
+        },
+        id: "el60"
+      }, {
+        color: "#456789",
+        name: "Yorkshire",
+        capacity: {
+          "2022": schools["Yorkshire"]
+        },
+        id: "el61"
+      }, {
+        color: "#cd1a2b",
+        name: "Chris Yung",
+        capacity: {
+          "2022": schools["Chris Yung"]
+        },
+        id: "el62"
+      }, {
+        color: "#f8c5a2",
+        name: "Rosemount Lewis",
+        capacity: {
+          "2022": schools["Rosemount Lewis"]
+        },
+        id: "el63"
+      }, {
+        color: "#0099cd",
+        name: "Benton",
+        capacity: {
+          "2022": schools["Benton"]
+        },
+        id: "mi1"
+      }, {
+        color: "#ffca5d",
+        name: "Beville",
+        capacity: {
+          "2022": schools["Beville"]
+        },
+        id: "mi2"
+      }, {
+        color: "#00cd99",
+        name: "Bull Run",
+        capacity: {
+          "2022": schools["Bull Run"]
+        },
+        id: "mi3"
+      }, {
+        color: "#99cd00",
+        name: "Gainesville",
+        capacity: {
+          "2022": schools["Gainesville"]
+        },
+        id: "mi4"
+      }, {
+        color: "#cd0099",
+        name: "Graham Park",
+        capacity: {
+          "2022": schools["Graham Park"]
+        },
+        id: "mi5"
+      }, {
+        color: "#9900cd",
+        name: "Hampton",
+        capacity: {
+          "2022": schools["Hampton"]
+        },
+        id: "mi6"
+      }, {
+        color: "#8dd3c7",
+        name: "Lake Ridge",
+        capacity: {
+          "2022": schools["Lake Ridge"]
+        },
+        id: "mi7"
+      }, {
+        color: "#bebada",
+        name: "Lynn",
+        capacity: {
+          "2022": schools["Lynn"]
+        },
+        id: "mi8"
+      }, {
+        color: "#fb8072",
+        name: "Marsteller",
+        capacity: {
+          "2022": schools["Marsteller"]
+        },
+        id: "mi9"
+      }, {
+        color: "#80b1d3",
+        name: "The Nokesville School",
+        capacity: {
+          "2022": schools["The Nokesville School"]
+        },
+        id: "mi10"
+      }, {
+        color: "#fdb462",
+        name: "Parkside",
+        capacity: {
+          "2022": schools["Parkside"]
+        },
+        id: "mi11"
+      }, {
+        color: "#b3de69",
+        name: "Potomac",
+        capacity: {
+          "2022": schools["Potomac"]
+        },
+        id: "mi12"
+      }, {
+        color: "#fccde5",
+        name: "Potomac Shores",
+        capacity: {
+          "2022": schools["Potomac Shores"]
+        },
+        id: "mi13"
+      }, {
+        color: "#d9d9d9",
+        name: "Reagan",
+        capacity: {
+          "2022": schools["Reagan"]
+        },
+        id: "mi14"
+      }, {
+        color: "#bc80bd",
+        name: "Rippon",
+        capacity: {
+          "2022": schools["Rippon"]
+        },
+        id: "mi15"
+      }, {
+        color: "#ccebc5",
+        name: "Saunders",
+        capacity: {
+          "2022": schools["Saunders"]
+        },
+        id: "mi16"
+      }, {
+        color: "#ffed6f",
+        name: "Unity Braxton",
+        capacity: {
+          "2022": schools["Unity Braxton"]
+        },
+        id: "mi17"
+      }, {
+        color: "#ffffb3",
+        name: "Woodbridge",
+        capacity: {
+          "2022": schools["Woodbridge"]
+        },
+        id: "mi18"
+      }, {
+        color: "#0099cd",
+        name: "Battlefield",
+        capacity: {
+          "2022": schools["Battlefield"]
+        },
+        id: "hi1"
+      }, {
+        color: "#ffca5d",
+        name: "Brentsville",
+        capacity: {
+          "2022": schools["Brentsville"]
+        },
+        id: "hi2"
+      }, {
+        color: "#00cd99",
+        name: "Colgan",
+        capacity: {
+          "2022": schools["Colgan"]
+        },
+        id: "hi3"
+      }, {
+        color: "#99cd00",
+        name: "Forest Park",
+        capacity: {
+          "2022": schools["Forest Park"]
+        },
+        id: "hi4"
+      }, {
+        color: "#cd0099",
+        name: "Freedom",
+        capacity: {
+          "2022": schools["Freedom"]
+        },
+        id: "hi5"
+      }, {
+        color: "#9900cd",
+        name: "Gainesville",
+        capacity: {
+          "2022": schools["Gainesville"]
+        },
+        id: "hi6"
+      }, {
+        color: "#8dd3c7",
+        name: "Gar-Field",
+        capacity: {
+          "2022": schools["Gar-Field"]
+        },
+        id: "hi7"
+      }, {
+        color: "#bebada",
+        name: "Hylton",
+        capacity: {
+          "2022": schools["Hylton"]
+        },
+        id: "hi8"
+      }, {
+        color: "#fb8072",
+        name: "Osbourn Park",
+        capacity: {
+          "2022": schools["Osbourn Park"]
+        },
+        id: "hi9"
+      }, {
+        color: "#80b1d3",
+        name: "Patriot",
+        capacity: {
+          "2022": schools["Patriot"]
+        },
+        id: "hi10"
+      }, {
+        color: "#fdb462",
+        name: "Potomac",
+        capacity: {
+          "2022": schools["Potomac"]
+        },
+        id: "hi11"
+      }, {
+        color: "#b3de69",
+        name: "Unity Reed",
+        capacity: {
+          "2022": schools["Unity Reed"]
+        },
+        id: "hi12"
+      }, {
+        color: "#fccde5",
+        name: "Woodbridge",
+        capacity: {
+          "2022": schools["Woodbridge"]
+        },
+        id: "hi13"
+      }];
+
+      _colorScheme.push.apply(_colorScheme, _toConsumableArray(_colorScheme.map(function (hex) {
+        return changeColorLuminance(hex, -0.3);
+      })));
+      /**
+       * District color scheme.
+       */
 
 
-  var colorScheme = _colorScheme;
-  /**
-   * Darker colors for when the user hovers over assigned units.
-   */
+      colorScheme = _colorScheme;
+      /**
+       * Darker colors for when the user hovers over assigned units.
+       */
 
-  var hoverColorScheme = colorScheme.map(function (hex) {
-    return changeColorLuminance(hex, -0.3);
+      var hoverColorScheme = colorScheme.map(function (hex) {
+        return changeColorLuminance(hex, -0.3);
+      });
+      /**
+       * Global district color scheme, with both the normal hex and the hoverHex
+       * variations included.
+       */
+
+      districtColors = colorScheme.map(function (hex, i) {
+        return {
+          id: i,
+          name: hex,
+          hex: hex,
+          hoverHex: hoverColorScheme[i]
+        };
+      });
+    });
+  }).catch(function (err) {
+    // handle any errors
+    console.error(err);
   });
   /**
    * Adjusts the color luminance. Use it for shading colors.
@@ -2516,20 +2992,7 @@
     }
 
     return rgb;
-  }
-  /**
-   * Global district color scheme, with both the normal hex and the hoverHex
-   * variations included.
-   */
-
-  var districtColors = colorScheme.map(function (hex, i) {
-    return {
-      id: i,
-      name: hex,
-      hex: hex,
-      hoverHex: hoverColorScheme[i]
-    };
-  }); // Right now I'm assuming colors are numbered, and that -1 or null means
+  } // Right now I'm assuming colors are numbered, and that -1 or null means
   // a block hasn't been colored. I don't think this is a good system.
 
   function getUnitColorProperty(parts) {
@@ -5474,7 +5937,9 @@
     return Layer;
   }();
 
-  mapboxGl.accessToken = "pk.eyJ1IjoiY3BhcHA2MSIsImEiOiJjbGI1aWR0aGwwNnVpNDBxODR4OTlkaTN6In0.1QyhuNt69R4trqwBQmrgfA";
+  mapboxGl.accessToken = "pk.eyJ1IjoiY3BhcHA2MSIsImEiOiJjbGI1aWR0aGwwNnVpNDBxODR4OTlkaTN6In0.1QyhuNt69R4trqwBQmrgfA"; //mapboxgl.accessToken =
+  //    "pk.eyJ1IjoiZGlzdHJpY3RyIiwiYSI6ImNqbjUzMTE5ZTBmcXgzcG81ZHBwMnFsOXYifQ.8HRRLKHEJA0AismGk2SX2g";
+
   var MapState =
   /**
    * @constructor
@@ -5520,10 +5985,11 @@
    */
 
   function addBaseUnits(map, parts, tileset, layerAdder) {
-    console.log(tileset.source);
+    //mapbox://cpapp61.4g1pu4l4
+    //PZ22a_Simplify_Enrollment_Pro-17kekz
     var units = new Layer(map, {
-      id: tileset.id,
-      source: tileset.source,
+      id: tileset.sourceLayer,
+      source: tileset.sourceLayer,
       "source-layer": tileset.sourceLayer,
       type: "fill",
       paint: {
@@ -5532,9 +5998,9 @@
       }
     }, layerAdder);
     var unitsBorders = new Layer(map, {
-      id: tileset.id + "-border",
+      id: tileset.sourceLayer + "-borders",
       type: "line",
-      source: tileset.source,
+      source: tileset.sourceLayer,
       "source-layer": tileset.sourceLayer,
       paint: unitBordersPaintProperty
     }, layerAdder);
@@ -5662,7 +6128,6 @@
 
 
   function addCounties(map, tileset, layerAdder, placeID) {
-    console.log(placeID);
     map.addSource(tileset.sourceLayer, tileset.source);
     return new Layer(map, {
       id: "county-hover",
@@ -5673,7 +6138,8 @@
         "fill-opacity": ["case", ["boolean", ["feature-state", "hover"], false], 0.6, 0],
         "fill-color": "#aaa"
       },
-      filter: ["==", ["get", "STATEFP"], String(stateNameToFips[placeID.toLowerCase().replace("2020", "").replace("_bg", "").replace("wisco2019acs", "wisconsin").replace("mnacs", "minnesota")])]
+      filter: ["==", ["get", "STATEFP"], String(stateNameToFips[placeID.toLowerCase().replace("2020", "").replace("_bg", "").replace("wisco2019acs", "wisconsin").replace("mnacs", "minnesota")])],
+      'generateId': true
     }, layerAdder);
   }
   /**
@@ -9364,7 +9830,6 @@
   var _templateObject$Q, _templateObject2$v, _templateObject3$n;
 
   function addNewColorButton(colors, onInput) {
-    console.log(colors);
     var nextColor = colors.find(function (color) {
       return color.visible === false;
     });
@@ -9447,7 +9912,9 @@
 
         try {
           document.getElementById("tool-".concat(this.id)).checked = true;
-        } catch (e) {}
+        } catch (e) {
+          console.log(e);
+        }
       }
     }, {
       key: "deactivate",
@@ -9558,10 +10025,8 @@
       key: "selectColor",
       value: function selectColor(e) {
         e.target.value;
-        console.log(e.target.value.split(/d/));
-        console.log(this.colors); //this.brush.setColor(this.colors[parseInt(str.charAt(str.length-1))-1].color.color);
-
-        this.brush.setColor(e.target.value.split(/d/));
+        this.state.place.id = e.target.value;
+        this.brush.setColor(Number(e.target.value.match(/(\d+)/)[0]) - 1);
         this.renderToolbar();
 
         if (document.querySelectorAll) {
@@ -9617,8 +10082,7 @@
     }, {
       key: "render",
       value: function render() {
-        var activeColor = this.state.place.id.substr(0, 2) + this.state.place.id.charAt(this.state.place.id.length - 1);
-        console.log(this.colors);
+        var activeColor = this.state.place.id.substr(0, 2) + this.state.place.id.match(/(\d+)/)[0];
         return html(_templateObject2$u || (_templateObject2$u = _taggedTemplateLiteral(["\n            ", "\n            ", "\n            ", "\n            ", "\n            ", "\n        "])), this.colors.length > 1 ? BrushColorPicker(this.state, this.colors, this.selectColor, activeColor) : "", BrushSlider(this.brush.radius, this.changeRadius), this.options && this.options.county_brush ? CountyBrush(this.brush.county_brush, this.toggleCountyBrush, this.options.alt_counties) : "", this.colors.length > 1 ? BrushLock(this.brush.locked, this.toggleBrushLock, this.options) : "", UndoRedo(this.brush));
       }
     }]);
@@ -10937,7 +11401,7 @@
     }, {
       key: "setColor",
       value: function setColor(color) {
-        this.color = parseInt(color);
+        this.color = color;
       }
     }, {
       key: "startErasing",
@@ -10987,8 +11451,8 @@
             seenCounties = new Set(),
             countyProp = "GEOID10";
 
-        if (this.color || this.color === 0 || this.color === '0') {
-          this.changedColors.add(Number(this.color));
+        if (this.color || this.color === 0 || this.color === "0") {
+          this.changedColors.add(this.color);
 
           if (!this.nycPlusMinus[String(Number(this.color))]) {
             this.nycPlusMinus[String(Number(this.color))] = {
@@ -11047,7 +11511,7 @@
                   || // || idSearch("CNTYVTD", 3)
                   idSearch("Code", null, function (precinct) {
                     return precinct.split(",")[0] + ",";
-                  }) || idSearch("COUNTYFP") || idSearch("COUNTYFP10") || idSearch("COUNTY") || idSearch("CTYNAME") || idSearch("CNTYNAME") || idSearch("cnty_nm") || idSearch("locality") || idSearch("NAME", null, nameSplice) || idSearch("NAME10", null, nameSplice) || idSearch("Precinct", null, function (val) {
+                  }) || idSearch("COUNTYFP") || idSearch("COUNTYFP10") || idSearch("COUNTY") || idSearch("CTYNAME") || idSearch("CNTYNAME") || idSearch("cnty_nm") || idSearch("locality") || idSearch("PZ_DATA_BNDY_ES.ST0_ES") || idSearch("NAME", null, nameSplice) || idSearch("NAME10", null, nameSplice) || idSearch("Precinct", null, function (val) {
                     // Oregon
                     var name = val.split("_");
                     name.splice(-1);
@@ -11092,8 +11556,8 @@
 
                 if (this.color === null || this.color === undefined) {// handled in removal of old color (as if this was painting a new color over this)
                   // this.nycPlusMinus[String(Number(this.color))].removed.push(feature.properties.GEOINDEX || feature.properties.GEOID20);
-                } else if (Object.keys(feature.properties).includes("GEOINDEX")) {
-                  this.nycPlusMinus[String(Number(this.color))].added.push(feature.properties.GEOINDEX);
+                } else if (Object.keys(feature.properties).includes("OmniGDB.SDE.PZ22a_QAT_Simplify_NAD1983.OBJECTID")) {
+                  this.nycPlusMinus[String(Number(this.color))].added.push(feature.properties["PZ_DATA_BNDY_ES.ST0_ES"]);
                 }
               } // remember feature's initial color once per paint event
               // remember population data so it can be un-counted
@@ -11116,8 +11580,8 @@
                   };
                 }
 
-                if (Object.keys(feature.properties).includes("GEOINDEX")) {
-                  this.nycPlusMinus[String(Number(feature.state.color))].removed.push(feature.properties.GEOINDEX);
+                if (Object.keys(feature.properties).includes("OmniGDB.SDE.PZ22a_QAT_Simplify_NAD1983.OBJECTID")) {
+                  this.nycPlusMinus[String(Number(feature.state.color))].removed.push(feature.properties["PZ_DATA_BNDY_ES.ST0_ES"]);
                 }
               }
 
@@ -11580,7 +12044,7 @@
             seenCounties = new Set(),
             countyProp = "GEOID10";
 
-        if (this.color || this.color === 0 || this.color === '0') {
+        if (this.color || this.color === 'el1' || this.color === 'mi1' || this.color === 'hi1') {
           this.changedColors.add(Number(this.color));
         }
 
@@ -11661,6 +12125,8 @@
                   fullColors.push(_this2.color);
                   addsColor = true;
                 }
+
+                console.log(addsColor);
 
                 if (_this2.color !== null && addsColor && feature.properties && Object.keys(feature.properties).includes("GEOINDEX")) {
                   // add this color if not an eraser
@@ -20364,7 +20830,8 @@
 
   function ToolsPlugin(editor) {
     var state = editor.state,
-        toolbar = editor.toolbar;
+        toolbar = editor.toolbar; //state.place.id.substr(0,2) + "1"
+
     var showVRA = state.plan.problem.type !== "community" && spatial_abilities(state.place.id).vra_effectiveness;
     var brush = state.problem.type === 'community' ? new CommunityBrush(state.units, 20, 0) : new Brush(state.units, 20, 0);
     brush.on("colorfeature", state.update);
@@ -21870,7 +22337,7 @@
           this.overlay.setColorRule(purpleByCount);
           document.getElementById("counts-" + this._id).style.display = "none";
           document.getElementById("percents-" + this._id).style.display = "block";
-        } else if (this.firstOnly || this.subgroups[i].total === this.subgroups[i] || this.subgroups[i].key.includes("TOTPOP")) {
+        } else if (this.firstOnly || this.subgroups[i].total === this.subgroups[i] || this.subgroups[i].key.includes("PZ_DATA_BNDY_ES_ST0_ES")) {
           if (this.firstOnly || this.purpleHardcode) {
             this.overlay.setColorRule(purpleByCount);
           } else {
@@ -22918,6 +23385,8 @@
     }
   }
   function barLength$1(deviation, maxBarLength) {
+    console.log(deviation);
+    console.log(maxBarLength);
     return Math.abs(deviation) * maxBarLength;
   }
   function barPosition(deviation, width) {
@@ -22949,6 +23418,7 @@
 
   var OverUnderBars = function OverUnderBars(data, colors, ideal, textHeight, w) {
     return data.map(function (d, i) {
+      console.log(d);
       var deviation = pctDeviationFromIntegerMultiple(d, ideal);
       var labelX = labelPosition(deviation, gap$1, width$1);
       var barL = barLength$1(deviation, maxBarLength);
@@ -22993,7 +23463,7 @@
       return 0;
     }
 
-    return width * (d / maxValue);
+    return width * (d * 0.95 / maxValue);
   }
 
   var extra = 20;
@@ -23008,24 +23478,25 @@
   var horizontalBarChart = function horizontalBarChart(population, parts) {
     // Slice so that we only use active parts
     // Should we only use districts with population > 0?
-    var data = population.total.data.slice(0, parts.length);
+    var data = population.total.data.slice(0, parts.length); //, capacity: parts.capacity["2023"]};
+
     var maxValue = maxDisplayValue(population);
-    var colors = parts.map(function (part) {
+    parts.map(function (part) {
       return part.color;
     });
-    var formattedIdeal = population.formattedIdeal;
+    population.formattedIdeal;
     var deviations = population.deviations();
     var chartHeight = Math.max(defaultHeight, 12 * data.length);
     var w = barHeight(data, chartHeight, gap);
     var textHeight = Math.min(w + gap, 16);
     var idealX = width - barLength(population.ideal, maxValue);
     return svg(_templateObject$i || (_templateObject$i = _taggedTemplateLiteral(["<svg viewBox=\"0 0 ", " ", "\" class=\"bar-chart\">\n    ", "\n        ", "\n    ", "\n    </svg>\n    "])), width, chartHeight + extra, data.map(function (d, i) {
-      var barW = barLength(d, maxValue);
-      return svg(_templateObject2$8 || (_templateObject2$8 = _taggedTemplateLiteral(["<rect\n                    width=\"", "\"\n                    height=\"", "\"\n                    x=\"0\"\n                    y=\"", "\"\n                    style=\"fill: ", "\"\n                ><title>District ", " Deviation: ", "%</title>\n            </rect>"])), barW, w, i * (w + gap), colors[i], parts[i].displayNumber, roundToDecimal(deviations[i] * 100, 2));
-    }), population.ideal > 0 ? svg(_templateObject3$6 || (_templateObject3$6 = _taggedTemplateLiteral(["<line x1=\"", "\" y1=\"", "\" x2=\"", "\" y2=\"", "\" stroke=\"#aaa\" />\n                  <text x=\"", "\" y=\"", "\" fill=\"#111\">\n                  Ideal:\n                  ", "\n                  </text>"])), width - idealX, 0, width - idealX, chartHeight + extra, width - idealX + 3, chartHeight + extra - 4, formattedIdeal) : "", data.map(function (d, i) {
-      var barW = barLength(d, maxValue),
-          textX = barW + 2 * gap;
-      return Math.round(d) > 0 ? svg(_templateObject4$6 || (_templateObject4$6 = _taggedTemplateLiteral(["\n    <text\n        style=\"font-size: ", "px;", "\"\n        x=\"", "\"\n        text-anchor=\"", "\"\n        y=\"", "\">", "</text>"])), textHeight, textX <= 240 || 'font-weight:bold;', textX > 240 ? 300 : textX, textX > 240 ? 'end' : 'start', i * (w + gap) + w - (w + gap - textHeight) / 2, numberWithCommas(Math.round(d))) : "";
+      var barW = barLength(d, parts[i].color.capacity["2022"] * 2 * 0.95);
+      return svg(_templateObject2$8 || (_templateObject2$8 = _taggedTemplateLiteral(["<rect\n                    width=\"", "\"\n                    height=\"", "\"\n                    x=\"0\"\n                    y=\"", "\"\n                    style=\"fill: ", "\"\n                ><title>District ", " Deviation: ", "%</title>\n            </rect>"])), barW, w, i * (w + gap), parts[i].color.color, parts[i].displayNumber, roundToDecimal(deviations[i] * 100, 2));
+    }), population.ideal > 0 ? svg(_templateObject3$6 || (_templateObject3$6 = _taggedTemplateLiteral(["<line x1=\"", "\" y1=\"", "\" x2=\"", "\" y2=\"", "\" stroke=\"#aaa\" />\n                  <text x=\"", "\" y=\"", "\" fill=\"#111\">\n                  Ideal:\n                  ", "\n                  </text>"])), width - idealX, 0, width - idealX, chartHeight + extra, width - idealX + 3, chartHeight + extra - 4, "95%") : "", data.map(function (d, i) {
+      var barW = barLength(d, parts[i].color.capacity["2022"] * 2 * 0.95),
+          textX = barW + gap;
+      return Math.round(d) > 0 ? svg(_templateObject4$6 || (_templateObject4$6 = _taggedTemplateLiteral(["\n    <text\n        style=\"font-size: ", "px;", "\"\n        x=\"", "\"\n        text-anchor=\"", "\"\n        y=\"", "\">", ": ", "</text>"])), textHeight, textX <= 240 || 'font-weight:bold;', textX > 240 ? 300 : textX, textX > 240 ? 'end' : 'start', i * (w + gap) + w - (w + gap - textHeight) / 2, parts[i].color.name, numberWithCommas(Math.round(d))) : "";
     }));
   };
 
@@ -23052,6 +23523,7 @@
 
   var _templateObject$g;
   var unassignedPopulation = (function (population) {
+    console.log(population);
     var totalAssignedPop = sum(population.total.data);
     var unassignedPop = Math.round(population.total.sum - totalAssignedPop);
     return html(_templateObject$g || (_templateObject$g = _taggedTemplateLiteral(["\n        <div class=\"ui-option ui-option--slim\">\n            <dt class=\"ui-label ui-label--row\">Unassigned population:</dt>\n            <dd class=\"ui-data\">", "</dd>\n        </div>\n    "])), numberWithCommas(unassignedPop));

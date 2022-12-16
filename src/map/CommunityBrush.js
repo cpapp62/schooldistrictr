@@ -14,7 +14,7 @@ export default class CommunityBrush extends Brush {
         let seenFeatures = new Set(),
             seenCounties = new Set(),
             countyProp = "GEOID10";
-        if (this.color || this.color === 0 || this.color === '0') {
+        if (this.color || this.color === 'el1' || this.color === 'mi1' || this.color === 'hi1') {
             this.changedColors.add(Number(this.color));
         }
         for (let feature of this.hoveredFeatures) {
@@ -86,7 +86,7 @@ export default class CommunityBrush extends Brush {
                     fullColors.push(this.color);
                     addsColor = true;
                 }
-
+				console.log(addsColor);
                 if (this.color !== null && addsColor && feature.properties && Object.keys(feature.properties).includes("GEOINDEX")) {
                   // add this color if not an eraser
                   if (!this.nycPlusMinus[String(this.color)]) {

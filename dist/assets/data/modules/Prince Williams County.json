@@ -385,7 +385,7 @@
                 "id": "hi12"
             }, {
                 "color": "#fccde5",
-                "name": "Woodbridge",
+                "name": "Woodbridge HS",
                 "capacity": 807,
                 "id": "hi13"
             }
@@ -398,8 +398,9 @@
                         "type": "population",
                         "name": "Population",
                         "total": {
-                            "key": "TOTPOP",
+                            "key": "PZ_DATA_BNDY_ES.ST0_ES",
                             "name": "Total elementary school population",
+							"short": "el2022",
                             "sum": 39402,
                             "min": 0,
                             "max": 17815
@@ -421,16 +422,15 @@
                     ]
                 ],
                 "tilesets": [{
-						"id": "es2023",
                         "type": "fill",
                         "source": {
-                            "type": "geojson",
-                            "data": "https://studio.mapbox.com/tilesets/cpapp61.4g1pu4l4"
+                            "type": "vector",
+                            "url": "mapbox://cpapp61.4g1pu4l4",
+							"promoteId": {"PZ22a_Simplify_Enrollment_Pro-17kekz": "OmniGDB.SDE.PZ22a_QAT_Simplify_NAD1983.OBJECTID"}
                         },
-                        "sourceLayer": "PZ23",
+                        "sourceLayer": "PZ22a_Simplify_Enrollment_Pro-17kekz",
 						"year": "2023"
                     }, {
-						"id": "es2023-border",
                         "type": "circle",
                         "source": {
                             "type": "vector",
@@ -726,7 +726,7 @@
                 "id": "mi9"
             }, {
                 "color": "#80b1d3",
-                "name": "The Nokesville School",
+                "name": "Nokesville School, The",
                 "capacity": 807,
                 "id": "mi10"
             }, {
@@ -766,7 +766,7 @@
                 "id": "mi17"
             }, {
                 "color": "#ffffb3",
-                "name": "Woodbridge",
+                "name": "Woodbridge MS",
                 "capacity": 807,
                 "id": "mi18"
             }

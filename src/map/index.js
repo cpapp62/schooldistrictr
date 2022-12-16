@@ -16,6 +16,8 @@ from "../utils";
 
 mapboxgl.accessToken =
     "pk.eyJ1IjoiY3BhcHA2MSIsImEiOiJjbGI1aWR0aGwwNnVpNDBxODR4OTlkaTN6In0.1QyhuNt69R4trqwBQmrgfA";
+//mapboxgl.accessToken =
+//    "pk.eyJ1IjoiZGlzdHJpY3RyIiwiYSI6ImNqbjUzMTE5ZTBmcXgzcG81ZHBwMnFsOXYifQ.8HRRLKHEJA0AismGk2SX2g";
 
 export class MapState {
     /**
@@ -61,10 +63,11 @@ export class MapState {
  * @returns {Object} Deconstructible object containing base units and borders.
  */
 function addBaseUnits(map, parts, tileset, layerAdder) {
-	console.log(tileset.source);
+	//mapbox://cpapp61.4g1pu4l4
+	//PZ22a_Simplify_Enrollment_Pro-17kekz
     const units = new Layer(map, {
-            id: tileset.id,
-            source: tileset.source,
+            id: tileset.sourceLayer,
+            source: tileset.sourceLayer,
             "source-layer": tileset.sourceLayer,
             type: "fill",
             paint: {
@@ -75,9 +78,9 @@ function addBaseUnits(map, parts, tileset, layerAdder) {
             layerAdder);
 
     const unitsBorders = new Layer(map, {
-            id: tileset.id + "-border",
+            id: tileset.sourceLayer + "-borders",
             type: "line",
-            source: tileset.source,
+            source: tileset.sourceLayer,
             "source-layer": tileset.sourceLayer,
             paint: unitBordersPaintProperty
         },
@@ -206,7 +209,6 @@ function addTracts(map, tilesets, stateName) {
  * @returns {Layer} A districtr Layer instance.
  */ 
 function addCounties(map, tileset, layerAdder, placeID) {
-	console.log(placeID);
     map.addSource(tileset.sourceLayer, tileset.source);
 
     return new Layer(map, {
@@ -227,7 +229,8 @@ function addCounties(map, tileset, layerAdder, placeID) {
             "==",
             ["get", "STATEFP"],
             String(stateNameToFips[placeID.toLowerCase().replace("2020", "").replace("_bg", "").replace("wisco2019acs", "wisconsin").replace("mnacs", "minnesota")])
-        ]
+        ],
+		'generateId': true
     },
         layerAdder);
 }

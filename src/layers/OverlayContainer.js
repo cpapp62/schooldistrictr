@@ -150,7 +150,7 @@ export default class OverlayContainer {
             this.overlay.setColorRule(purpleByCount);
             document.getElementById("counts-" + this._id).style.display = "none";
             document.getElementById("percents-" + this._id).style.display = "block";
-        } else if (this.firstOnly || (this.subgroups[i].total === this.subgroups[i]) || (this.subgroups[i].key.includes("TOTPOP"))) {
+        } else if (this.firstOnly || (this.subgroups[i].total === this.subgroups[i]) || (this.subgroups[i].key.includes("PZ_DATA_BNDY_ES_ST0_ES"))) {
             if (this.firstOnly || this.purpleHardcode) {
                 this.overlay.setColorRule(purpleByCount);
             } else {

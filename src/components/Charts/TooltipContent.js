@@ -76,8 +76,7 @@ export function TooltipContent(
     parts,
     columnSetIndex,
     divisor
-) {
-    if (features === null || features === undefined) {
+) {    if (features === null || features === undefined) {
         return "";
     }
     let total = sum(features.map(f => columnSet.total.getValue(f)));

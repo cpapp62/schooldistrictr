@@ -1,7 +1,6 @@
 import { html } from "lit-html";
 
 function addNewColorButton(colors, onInput) {
-	console.log(colors);
     const nextColor = colors.find(color => color.visible === false);
     const onClick = () => {
         nextColor.visible = true;

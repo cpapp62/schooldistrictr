@@ -32,7 +32,7 @@ export default class Brush extends HoverWithRadius {
         }];
     }
     setColor(color) {
-        this.color = parseInt(color);
+        this.color = color;
     }
     startErasing() {
         this._previousColor = this.color;
@@ -45,7 +45,6 @@ export default class Brush extends HoverWithRadius {
     }
     hoverOn(features) {
         this.hoveredFeatures = features;
-
         if (this.coloring === true) {
             this.colorFeatures();
         } else {
@@ -68,8 +67,8 @@ export default class Brush extends HoverWithRadius {
         let seenFeatures = new Set(),
             seenCounties = new Set(),
             countyProp = "GEOID10";
-        if (this.color || this.color === 0 || this.color === '0') {
-            this.changedColors.add(Number(this.color));
+        if (this.color || this.color === 0 || this.color === "0") {
+            this.changedColors.add(this.color);
             if (!this.nycPlusMinus[String(Number(this.color))]) {
               this.nycPlusMinus[String(Number(this.color))] = { added:[], removed:[] };
             }
@@ -120,6 +119,7 @@ export default class Brush extends HoverWithRadius {
                         || idSearch("CNTYNAME")
                         || idSearch("cnty_nm")
                         || idSearch("locality")
+						|| idSearch("PZ_DATA_BNDY_ES.ST0_ES")
                         || idSearch("NAME", null, nameSplice)
                         || idSearch("NAME10", null, nameSplice)
                         || idSearch("Precinct", null, (val) => {
@@ -144,8 +144,8 @@ export default class Brush extends HoverWithRadius {
                     if (this.color === null || this.color === undefined) {
                       // handled in removal of old color (as if this was painting a new color over this)
                       // this.nycPlusMinus[String(Number(this.color))].removed.push(feature.properties.GEOINDEX || feature.properties.GEOID20);
-                    } else if (Object.keys(feature.properties).includes("GEOINDEX")) {
-                      this.nycPlusMinus[String(Number(this.color))].added.push(feature.properties.GEOINDEX);
+                    } else if (Object.keys(feature.properties).includes("OmniGDB.SDE.PZ22a_QAT_Simplify_NAD1983.OBJECTID")) {
+                      this.nycPlusMinus[String(Number(this.color))].added.push(feature.properties["PZ_DATA_BNDY_ES.ST0_ES"]);
                     }
                 }
 
@@ -162,11 +162,10 @@ export default class Brush extends HoverWithRadius {
                     if (!this.nycPlusMinus[String(Number(feature.state.color))]) {
                       this.nycPlusMinus[String(Number(feature.state.color))] = { added:[], removed:[] };
                     }
-                    if (Object.keys(feature.properties).includes("GEOINDEX")) {
-                      this.nycPlusMinus[String(Number(feature.state.color))].removed.push(feature.properties.GEOINDEX);
+                    if (Object.keys(feature.properties).includes("OmniGDB.SDE.PZ22a_QAT_Simplify_NAD1983.OBJECTID")) {
+                      this.nycPlusMinus[String(Number(feature.state.color))].removed.push(feature.properties["PZ_DATA_BNDY_ES.ST0_ES"]);
                     }
                 }
-
                 this.layer.setFeatureState(feature.id, {
                     ...feature.state,
                     color: this.color,

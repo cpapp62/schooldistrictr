@@ -10,7 +10,7 @@ function barLength(d, maxValue) {
     if (d === 0 || maxValue === 0) {
         return 0;
     }
-    return width * (d / maxValue);
+    return width * ((d * 0.95) / maxValue);
 }
 
 const extra = 20;
@@ -25,7 +25,7 @@ function maxDisplayValue(population) {
 const horizontalBarChart = (population, parts) => {
     // Slice so that we only use active parts
     // Should we only use districts with population > 0?
-    const data = population.total.data.slice(0, parts.length);
+    const data = population.total.data.slice(0, parts.length);//, capacity: parts.capacity["2023"]};
     const maxValue = maxDisplayValue(population);
     const colors = parts.map(part => part.color);
     const formattedIdeal = population.formattedIdeal;
@@ -39,13 +39,13 @@ const horizontalBarChart = (population, parts) => {
     return svg`<svg viewBox="0 0 ${width} ${chartHeight +
         extra}" class="bar-chart">
     ${data.map((d, i) => {
-        const barW = barLength(d, maxValue);
+        const barW = barLength(d, (parts[i].color.capacity["2022"]*2)*0.95);
         return svg`<rect
                     width="${barW}"
                     height="${w}"
                     x="0"
                     y="${i * (w + gap)}"
-                    style="fill: ${colors[i]}"
+                    style="fill: ${parts[i].color.color}"
                 ><title>District ${
                     parts[i].displayNumber
                 } Deviation: ${roundToDecimal(deviations[i] * 100, 2)}%</title>
@@ -59,13 +59,13 @@ const horizontalBarChart = (population, parts) => {
                       extra -
                       4}" fill="#111">
                   Ideal:
-                  ${formattedIdeal}
+                  ${"95%"}
                   </text>`
                 : ""
         }
     ${data.map((d, i) => {
-        let barW = barLength(d, maxValue),
-              textX = barW + 2 * gap;
+        let barW = barLength(d, (parts[i].color.capacity["2022"]*2)*0.95),
+              textX = barW + gap;
         return Math.round(d) > 0
             ? svg`
     <text
@@ -74,7 +74,7 @@ const horizontalBarChart = (population, parts) => {
         text-anchor="${(textX > 240) ? 'end' : 'start'}"
         y="${i * (w + gap) +
             w -
-            (w + gap - textHeight) / 2}">${numberWithCommas(
+            (w + gap - textHeight) / 2}">${parts[i].color.name}: ${numberWithCommas(
                   Math.round(d)
               )}</text>`
             : "";

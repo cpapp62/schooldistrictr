@@ -20,6 +20,8 @@ export function pctDeviationFromIntegerMultiple(d, ideal) {
 }
 
 export function barLength(deviation, maxBarLength) {
+	console.log(deviation);
+	console.log(maxBarLength);
     return Math.abs(deviation) * maxBarLength;
 }
 

@@ -18,6 +18,7 @@ import { html, render } from "lit-html";
 
 export default function ToolsPlugin(editor) {
     const { state, toolbar } = editor;
+	//state.place.id.substr(0,2) + "1"
     const showVRA = (state.plan.problem.type !== "community") && (spatial_abilities(state.place.id).vra_effectiveness);
     const brush = (state.problem.type === 'community')
         ? new CommunityBrush(state.units, 20, 0)

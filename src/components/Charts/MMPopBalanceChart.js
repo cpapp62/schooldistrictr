@@ -22,6 +22,7 @@ const extra = 20;
 
 const OverUnderBars = (data, colors, ideal, textHeight, w) =>
     data.map((d, i) => {
+		console.log(d);
         const deviation = pctDeviationFromIntegerMultiple(d, ideal);
         const labelX = labelPosition(deviation, gap, width);
 

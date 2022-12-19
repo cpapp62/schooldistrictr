@@ -1,6 +1,8 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const { createDefaultConfig } = require('@open-wc/testing-karma');
 const merge = require("webpack-merge");
+require("babel-core/register");
+require("babel-polyfill");
 
 module.exports = config => {
     config.set(

@@ -2,6 +2,9 @@ import Election from "../Election";
 import Part from "../Part";
 import Population from "../Population";
 import { districtColors } from "../../colors";
+import regeneratorRuntime from "regenerator-runtime";
+//require("babel-polyfill");
+"use strict";
 
 // This module provides functions that creates Part and ColumnSet (Election
 // and Population) objects from the Place and DistrictingProblem records
@@ -23,7 +26,7 @@ import { districtColors } from "../../colors";
 // where we use `state.vap` and add code handling `state.under18` or
 // something.
 
-export function getParts(problem) {
+export async function getParts(problem) {
     let name = problem.name || "District";
     let parts = [];
 	let start = 0;
@@ -33,10 +36,19 @@ export function getParts(problem) {
 	else if(problem.pluralNoun == "High Schools"){
 		start = 81;
 	}
+	console.log(districtColors);
+	(async() => {
+		console.log("waiting for variable");
+		while(!window.hasOwnProperty(districtColors)) // define the condition as you like
+			await new Promise(resolve => setTimeout(resolve, 1000));
+		console.log("variable is defined");
+	})();
+	console.log(districtColors);
     for (let i = start; i < problem.numberOfParts+start; i++) {
         let j = i % districtColors.length;
         parts[i - start] = new Part(i - start, name, (i - start) + 1, districtColors[j]);
     }
+
     if (parts.length > districtColors.length) {
         parts.slice(1).forEach(p => {
             p.visible = false;

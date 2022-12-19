@@ -751,6 +751,7 @@ export function changeColorLuminance(hex, lum) {
 // a block hasn't been colored. I don't think this is a good system.
 
 export function getUnitColorProperty(parts) {
+	console.log(parts);
     const unitColorStyle = [
         "match",
         ["feature-state", "color"],

@@ -2,6 +2,8 @@
 import "babel-polyfill";
 import mongoose from 'mongoose'
 const dotenv = require('dotenv').config();
+require("babel-core/register");
+require("babel-polyfill");
 
 
 const dbUrl = process.env.DB_URL,

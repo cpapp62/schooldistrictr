@@ -14,7 +14,7 @@ export default function PopulationBalancePlugin(editor) {
     const state = editor.state;
     const showVRA = (state.plan.problem.type !== "community") && (spatial_abilities(state.place.id).vra_effectiveness);
     const tab = new Tab("criteria", showVRA ? "Pop." : "Population", editor.store);
-
+	console.log(editor);
     let place = editor.state.place.id,
         extra_source = (editor.state.units.sourceId === "ma_precincts_02_10") ? "ma_02" : 0;
     if (editor.state.units.sourceId === "ma_towns") {

@@ -1,12 +1,31 @@
-import { roundToDecimal, numberWithCommas } from "../../utils";
+import {
+    roundToDecimal,
+    numberWithCommas
+}
+from "../../utils";
 import DataTable from "./DataTable";
-import { html } from "lit-html";
+import {
+    html
+}
+from "lit-html";
 import Select from "../Select";
 import Parameter from "../Parameter";
-import { toggle } from "../Toggle";
-import { actions } from "../../reducers/charts";
-import { generateId } from "../../utils";
-import Layer, { addBelowLabels } from "../../map/Layer";
+import {
+    toggle
+}
+from "../Toggle";
+import {
+    actions
+}
+from "../../reducers/charts";
+import {
+    generateId
+}
+from "../../utils";
+import Layer, {
+    addBelowLabels
+}
+from "../../map/Layer";
 
 /**
  * We want the background color to be #f9f9f9 when value = 0, and black when
@@ -50,7 +69,10 @@ function getEntries(subgroup, part) {
 
 export function DistrictEvaluationTable(columnSet, placeName, part) {
     if (!part && part !== "") {
-        part = [{ id: 0 }];
+        part = [{
+                id: 0
+            }
+        ];
     }
     const subgroups = columnSet.subgroups;
     const headers = part ? [part.name || part.renderLabel(), placeName] : [placeName];
@@ -65,18 +87,16 @@ export function DistrictEvaluationTable(columnSet, placeName, part) {
         content: numberWithCommas(Math.round(columnSet.total.sum)),
         style: "width: 40%"
     });
-    let rows = [
-        {
+    let rows = [{
             label: "Total",
             entries: entries
         }
     ];
     rows.push(
         ...subgroups.map(subgroup => ({
-            label: subgroup.getAbbreviation(),
-            entries: getEntries(subgroup, part)
-        }))
-    );
+                label: subgroup.getAbbreviation(),
+                entries: getEntries(subgroup, part)
+            })));
 
     return DataTable(headers, rows);
 }
@@ -85,41 +105,46 @@ export default DistrictEvaluationTable;
 
 export const CoalitionPivotTable = (chartId, columnSet, placeName, parts, units, totalOnly, districtView) => (
     uiState,
-    dispatch
-) => {
-    const visibleParts = parts.filter(part => part.visible);
-    let fullsum = 0,
+    dispatch) => {
+    (async() => {
+        while (!window.hasOwnProperty(parts)) { // define the condition as you like
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+        const visibleParts = parts.filter(part => part.visible);
+        let fullsum = 0,
         mockData = [],
         selectSGs = columnSet.subgroups.filter(sg => window.coalitionGroups[sg.key]);
-    selectSGs.forEach(sg => {
-        fullsum += sg.sum;
-        sg.data.forEach((val, idx) => mockData[idx] = (mockData[idx] || 0) + val);
-    });
-    let coalitionSubgroup = {
-        data: mockData,
-        key: 'coal',
-        name: (selectSGs.length > 1 ? 'Coalition' : (selectSGs[0] || {name: 'None'}).name),
-        getAbbreviation: () => "Coalition",
-        getFractionInPart: (p) => {
-            let portion = 0;
-            selectSGs.forEach((selected) => {
-                portion += selected.getFractionInPart(p);
-            });
-            return portion;
-        },
-        sum: Math.round(fullsum),
-        total: columnSet.subgroups.length > 0 ? columnSet.subgroups[0].total : 0
-    };
+        selectSGs.forEach(sg => {
+            fullsum += sg.sum;
+            sg.data.forEach((val, idx) => mockData[idx] = (mockData[idx] || 0) + val);
+        });
+        let coalitionSubgroup = {
+            data: mockData,
+            key: 'coal',
+            name: (selectSGs.length > 1 ? 'Coalition' : (selectSGs[0] || {
+                    name: 'None'
+                }).name),
+            getAbbreviation: () => "Coalition",
+            getFractionInPart: (p) => {
+                let portion = 0;
+                selectSGs.forEach((selected) => {
+                    portion += selected.getFractionInPart(p);
+                });
+                return portion;
+            },
+            sum: Math.round(fullsum),
+            total: columnSet.subgroups.length > 0 ? columnSet.subgroups[0].total : 0
+        };
 
-    let mockColumnSet = {
-      ...columnSet,
-      subgroups: [coalitionSubgroup]
-    };
+        let mockColumnSet = {
+            ...columnSet,
+            subgroups: [coalitionSubgroup]
+        };
 
-    // support nameless districts and communities
-    visibleParts.forEach((p, i) => p.name = p.name || ("District " + (i + 1)));
+        // support nameless districts and communities
+        visibleParts.forEach((p, i) => p.name = p.name || ("District " + (i + 1)));
 
-    return html`
+        return html `
         <section class="toolbar-section coalition-table" style=${{ padding: totalOnly ? 0 : 10 }}>
             ${!totalOnly && visibleParts.length > 1
                 ? Parameter({
@@ -141,4 +166,5 @@ export const CoalitionPivotTable = (chartId, columnSet, placeName, parts, units,
             )}
         </section>
     `;
+    })();
 };

@@ -7,22 +7,53 @@ import PanTool from "../components/Toolbar/PanTool";
 import LandmarkTool from "../components/Toolbar/LandmarkTool";
 import Brush from "../map/Brush";
 import CommunityBrush from "../map/CommunityBrush";
-import { HoverWithRadius } from "../map/Hover";
+import {
+    HoverWithRadius
+}
+from "../map/Hover";
 import NumberMarkers from "../map/NumberMarkers";
 import ContiguityChecker from "../map/contiguity";
 import VRAEffectiveness from "../map/vra_effectiveness"
-import { renderVRAAboutModal, renderAboutModal, renderSaveModal, renderModal } from "../components/Modal";
-import { navigateTo, savePlanToStorage, savePlanToDB } from "../routes";
-import { download, spatial_abilities } from "../utils";
-import { html, render } from "lit-html";
+import {
+    renderVRAAboutModal,
+    renderAboutModal,
+    renderSaveModal,
+    renderModal
+}
+from "../components/Modal";
+import {
+    navigateTo,
+    savePlanToStorage,
+    savePlanToDB
+}
+from "../routes";
+import {
+    download,
+    spatial_abilities
+}
+from "../utils";
+import {
+    html,
+    render
+}
+from "lit-html";
+import {
+    loadModules
+}
+from 'esri-loader';
+import {
+    districtColors
+}
+from "../colors";
 
 export default function ToolsPlugin(editor) {
-    const { state, toolbar } = editor;
-	//state.place.id.substr(0,2) + "1"
+    const {
+        state,
+        toolbar
+    } = editor;
+    //state.place.id.substr(0,2) + "1"
     const showVRA = (state.plan.problem.type !== "community") && (spatial_abilities(state.place.id).vra_effectiveness);
-    const brush = (state.problem.type === 'community')
-        ? new CommunityBrush(state.units, 20, 0)
-        : new Brush(state.units, 20, 0);
+    const brush = new Brush(state.units, 20, 0);
     brush.on("colorfeature", state.update);
     brush.on("colorend", state.render);
     brush.on("colorend", toolbar.unsave);
@@ -34,15 +65,16 @@ export default function ToolsPlugin(editor) {
     }
 
     let alt_counties = {
-      alaska: 'boroughs',
-      alaska_blocks: 'boroughs',
-      louisiana: 'parishes',
-    }[state.place.id];
+        alaska: 'boroughs',
+        alaska_blocks: 'boroughs',
+        louisiana: 'parishes',
+    }
+    [state.place.id];
     let brushOptions = {
         community: (state.problem.type === "community"),
         county_brush: ((spatial_abilities(state.place.id).county_brush)
-            ? new HoverWithRadius(state.counties, 20)
-            : null),
+             ? new HoverWithRadius(state.counties, 20)
+             : null),
         alt_counties: alt_counties,
     };
 
@@ -51,45 +83,46 @@ export default function ToolsPlugin(editor) {
     window.planNumbers = NumberMarkers(state, brush);
 
     const contiguity_on = (spatial_abilities(state.place.id).contiguity
-                        || state.unitsRecord.id === "blockgroups"
-                        || state.unitsRecord.id === "blockgroups20"
-                        || state.unitsRecord.id === "vtds20");
+         || state.unitsRecord.id === "blockgroups"
+         || state.unitsRecord.id === "blockgroups20"
+         || state.unitsRecord.id === "vtds20");
     const c_checker = (contiguity_on && state.problem.type !== "community")
-                            ? ContiguityChecker(state, brush, false)
-                            : null;
+     ? ContiguityChecker(state, brush, false)
+     : null;
 
     if (state.place.id.indexOf("nyc") > -1) {
-      window.nycmode = true;
+        window.nycmode = true;
     }
     brush.on("colorop", (isUndoRedo, colorsAffected, nycPlusMinus) => {
         savePlanToStorage(state.serialize());
 
         if (window.nycmode) {
-          function sumChanges(plusAndMinus) {
-            let added = JSON.parse(plusAndMinus['+']),
+            function sumChanges(plusAndMinus) {
+                let added = JSON.parse(plusAndMinus['+']),
                 subtracted = JSON.parse(plusAndMinus['-']);
-            Object.keys(subtracted).forEach(skey => added[skey] -= subtracted[skey] || 0);
-            return added;
-          }
-          console.log(nycPlusMinus);
-          fetch("//mggg.pythonanywhere.com/nyc-assist", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ colors: nycPlusMinus }),
-          }).then(res => res.json()).then(tallies => {
-            Object.keys(tallies).forEach((part) => {
-              // add numbers to evaluation table
-              state.columnSets.forEach(columnSet => columnSet.update({
-                properties: sumChanges(tallies[part])
-              }, part));
-              // remove transparency on evaluation table
-              document.body.className = '';
-              // render table
-              state.render();
+                Object.keys(subtracted).forEach(skey => added[skey] -= subtracted[skey] || 0);
+                return added;
+            }
+            fetch("//mggg.pythonanywhere.com/nyc-assist", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    colors: nycPlusMinus
+                }),
+            }).then(res => res.json()).then(tallies => {
+                Object.keys(tallies).forEach((part) => {
+                    // add numbers to evaluation table
+                    state.columnSets.forEach(columnSet => columnSet.update({
+                            properties: sumChanges(tallies[part])
+                        }, part));
+                    // remove transparency on evaluation table
+                    document.body.className = '';
+                    // render table
+                    state.render();
+                });
             });
-          });
         }
 
         if (c_checker) {
@@ -101,7 +134,7 @@ export default function ToolsPlugin(editor) {
         }
 
         if (window.planNumbers && document.querySelector("#toggle-district-numbers")
-                               && document.querySelector("#toggle-district-numbers").checked) {
+             && document.querySelector("#toggle-district-numbers").checked) {
             window.planNumbers.update(state, colorsAffected);
         }
     });
@@ -115,8 +148,7 @@ export default function ToolsPlugin(editor) {
             state.nameColumn,
             state.unitsRecord,
             state.parts,
-            spatial_abilities(state.place.id).divisor,
-        )
+            spatial_abilities(state.place.id).divisor, )
     ];
 
     for (let tool of tools) {
@@ -130,11 +162,12 @@ export default function ToolsPlugin(editor) {
         toolbar.setState(state);
     }
 
-    hotkeys.filter = ({ target }) => {
+    hotkeys.filter = ({
+        target
+    }) => {
         return (
             !["INPUT", "TEXTAREA"].includes(target.tagName) ||
-            (target.tagName === "INPUT" && target.type.toLowerCase() !== "text" && target.type.toLowerCase() !== "search")
-        );
+            (target.tagName === "INPUT" && target.type.toLowerCase() !== "text" && target.type.toLowerCase() !== "search"));
     };
     hotkeys("h", (evt, handler) => {
         evt.preventDefault();
@@ -153,20 +186,62 @@ export default function ToolsPlugin(editor) {
         toolbar.selectTool("inspect");
     });
 
-    // show about modal on startup by default
+    loadModules(["esri/rest/support/Query", "esri/rest/query"]).then(([Query, query]) => {
+        let file = "https://gis.pwcs.edu/server/rest/services/Hosted/Schools_FeaturesToJSON/FeatureServer/0";
+        let params = new Query();
+        params.returnGeometry = false;
+        params.outFields = ["schltype", "point_x", "point_y", "school_id"];
+        params.where = 'schltype = 1';
+        const getFeatures = async() => {
+            while (!brush.layer.map.isSourceLoaded(brush.layer.sourceId)) {
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                console.log(brush.layer.sourceId);
+            }
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        };
+        getFeatures().then(features => {
+            query.executeQueryJSON(file, params).then((results2) => {
+                let lockedPZS = [];
+                let bound;
+                for (let i = 0; i < results2.features.length; i++) {
+                    bound = brush.initialColor(results2.features[i]);
+                    bound[0].color = results2.features[i].attributes["school_id"];
+                    lockedPZS.push(bound[0]);
+                }
+				let theFeatures = [121, 153, 196];
+				for(let j = 0; j < theFeatures.length; j++){
+					bound = brush.layer.map.querySourceFeatures(brush.layer.sourceLayer, {
+						sourceLayer: brush.layer.sourceLayer,
+						filter: ["==", "OmniGDB.SDE.PZ22a_QAT_Simplify_NAD1983.PZ_num", theFeatures[j]]
+					})
+					console.log(bound);
+					bound[0].color = 63;
+					bound[0].state = {};
+					bound[0].state.color = 63;
+					lockedPZS.push(bound[0]);
+				}
+                brush.lockedPZS = lockedPZS;
+                brush.firstColor(brush.lockedPZS);
+                toolbar.selectTool("brush");
+                toolbar.selectTool("pan");
+            })
+        });
 
-    // exceptions if you last were on this map, or set 'dev' in URL
-    // try {
-    //     if ((window.location.href.indexOf("dev") === -1) &&
-    //         (!localStorage || localStorage.getItem("lastVisit") !== state.place.id)
-    //     ) {
-    //         renderAboutModal(editor.state);
-    //         localStorage.setItem("lastVisit", state.place.id);
-    //     }
-    // } catch(e) {
-    //     // likely no About page exists - silently fail to console
-    //     console.error(e);
-    // }
+        // show about modal on startup by default
+
+        // exceptions if you last were on this map, or set 'dev' in URL
+        // try {
+        //     if ((window.location.href.indexOf("dev") === -1) &&
+        //         (!localStorage || localStorage.getItem("lastVisit") !== state.place.id)
+        //     ) {
+        //         renderAboutModal(editor.state);
+        //         localStorage.setItem("lastVisit", state.place.id);
+        //     }
+        // } catch(e) {
+        //     // likely no About page exists - silently fail to console
+        //     console.error(e);
+        // }
+    })
 }
 
 function exportPlanAsJSON(state) {
@@ -185,7 +260,7 @@ function exportPlanAsSHP(state, geojson) {
     fetch("//mggg.pythonanywhere.com/" + (geojson ? "geojson" : "shp"), {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+            "Content-Type": "application/json",
         },
         body: JSON.stringify(serialized),
     })
@@ -197,20 +272,18 @@ function exportPlanAsSHP(state, geojson) {
 }
 
 function exportPlanAsAssignmentFile(state, delimiter = ",", extension = "csv") {
-    if (state.place.id === "louisiana") {
-        delimiter = ";";
-    }
+	console.log(state);
     let srl = (assignment) => typeof assignment === "object" ? assignment.join("_") : assignment;
-    let text = `"id-${state.place.id}-${state.units.id}-${state.problem.numberOfParts}`;
-    text += `-${state.problem.pluralNoun.replace(/\s+/g, "")}"`;
-    text += `${delimiter}assignment\n`;
+    let text = `"${state.units.id.substr(0,4)} `;
+    text += `Feature ID"`;
+    text += `${delimiter}school assignment\n`;
     text += Object.keys(state.plan.assignment)
-        .map(unitId => `${unitId}${delimiter}${srl(state.plan.assignment[unitId])}`)
-        .join("\n");
-    download(`assignment-${state.plan.id}.${extension}`, text);
+		.map(unitId => `${unitId}${delimiter}${srl(state.plan.assignment[unitId])}`)
+		.join("\n");
+    download(`${state.place.elemProblems[0].name}_${state.units.id.substr(0,4)}.${extension}`, text);
 }
 
-function exportPlanAsBlockAssignment(state, delimiter=",", extension="csv") {
+function exportPlanAsBlockAssignment(state, delimiter = ",", extension = "csv") {
     const assign = Object.fromEntries(Object.entries(state.plan.assignment).map(([k, v]) => [k, Array.isArray(v) ? v[0] : v]));
     const units = state.unitsRecord.id;
     const stateName = state.place.state;
@@ -223,41 +296,43 @@ function exportPlanAsBlockAssignment(state, delimiter=",", extension="csv") {
         body: JSON.stringify({
             "state": stateName,
             "units": units,
-            "assignment": assign})
+            "assignment": assign
+        })
     })
     .then((res) => res.json())
     .catch((e) => console.error(e))
     .then((data) => {
-        console.log(data);
         const table_data = `Block${delimiter} District\n` + Object.entries(data).map(r => r.join(delimiter)).join("\n")
-        download(`block-assignment-${state.plan.id}.csv`, table_data)
+            download(`block-assignment-${state.plan.id}.csv`, table_data)
     })
 }
 
 function scrollToSection(state, section) {
     return () => {
         let url = "/" + state.place.state.replace(/,/g, "").replace(/\s+/g, '-'),
-            adjacent = window.open(url);
+        adjacent = window.open(url);
 
         // Attach a listener to the adjacent Window so that, when the
         // page-load-complete event fires, it's caught and the page is
         // scrolled to the correct location.
         adjacent.addEventListener("page-load-complete", e => {
             let adjacent = e.target,
-                anchorElement = adjacent.document.getElementById(section);
+            anchorElement = adjacent.document.getElementById(section);
 
             // Scrolls the desired anchor element to the top of the page, should
             // it exist.
-            if (anchorElement) anchorElement.scrollIntoView(true);
+            if (anchorElement)
+                anchorElement.scrollIntoView(true);
         });
     };
 }
 
 function getMenuItems(state) {
+	console.log(state);
     const showVRA = (state.plan.problem.type !== "community") && (spatial_abilities(state.place.id).vra_effectiveness);
     const censusUnit = state.unitsRecord.id === "blockgroups"
-                        || state.unitsRecord.id === "blockgroups20"
-                        || state.unitsRecord.id === "vtds20";
+         || state.unitsRecord.id === "blockgroups20"
+         || state.unitsRecord.id === "vtds20";
     let items = [
         {
             name: "About redistricting",

@@ -25,7 +25,8 @@ export default class Editor {
         });
 
         this.toolbar = new Toolbar(this.store, this);
-
+		
+		
         for (let plugin of plugins) {
             plugin(this);
         }

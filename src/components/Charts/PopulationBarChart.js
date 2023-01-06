@@ -25,7 +25,7 @@ function maxDisplayValue(population) {
 const horizontalBarChart = (population, parts) => {
     // Slice so that we only use active parts
     // Should we only use districts with population > 0?
-    const data = population.total.data.slice(0, parts.length);//, capacity: parts.capacity["2023"]};
+    const data = population.total.data.slice(0, parts.length);
     const maxValue = maxDisplayValue(population);
     const colors = parts.map(part => part.color);
     const formattedIdeal = population.formattedIdeal;

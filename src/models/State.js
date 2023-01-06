@@ -1,9 +1,26 @@
-import { addLayers } from "../map";
+import {
+    addLayers
+}
+from "../map";
 import IdColumn from "./IdColumn";
-import { assignUnitsAsTheyLoad } from "./lib/assign";
-import { generateId } from "../utils";
-import { getColumnSets, getParts } from "./lib/column-sets";
-import { addBelowLabels, addBelowSymbols } from "../map/Layer";
+import {
+    assignUnitsAsTheyLoad
+}
+from "./lib/assign";
+import {
+    generateId
+}
+from "../utils";
+import {
+    getColumnSets,
+    getParts
+}
+from "./lib/column-sets";
+import {
+    addBelowLabels,
+    addBelowSymbols
+}
+from "../map/Layer";
 
 // We should break this up. Maybe like this:
 // [ ] MapState (map, layers)
@@ -13,7 +30,14 @@ import { addBelowLabels, addBelowSymbols } from "../map/Layer";
 // "place" is mostly split up into these categories now.
 
 class DistrictingPlan {
-    constructor({ id, state, problem, place, idColumn, parts }) {
+    constructor({
+        id,
+        state,
+        problem,
+        place,
+        idColumn,
+        parts
+    }) {
         if (id) {
             this.id = id;
         } else {
@@ -25,8 +49,14 @@ class DistrictingPlan {
         if (!place.landmarks) {
             place.landmarks = {};
         }
-        this.place = { id: place.id, landmarks: place.landmarks, state: place.state, name: place.name };
+        this.place = {
+            id: place.id,
+            landmarks: place.landmarks,
+            state: place.state,
+            name: place.name
+        };
         this.parts = getParts(problem);
+        console.log(this.parts);
         if (parts) {
             for (let i = 0; i < parts.length; i++) {
                 this.parts.find(p => p.displayNumber === parts[i].displayNumber).updateDescription(parts[i]);
@@ -62,10 +92,18 @@ class DistrictingPlan {
             description: this.description,
             assignment: this.assignment,
             id: this.id,
-            idColumn: { key: this.idColumn.key, name: this.idColumn.name },
+            idColumn: {
+                key: this.idColumn.key,
+                name: this.idColumn.name
+            },
             problem: this.problem,
             parts: this.parts.filter(p => p.visible).map(p => p.serialize()),
-            place: { id: this.place.id, landmarks: this.place.landmarks, state: this.place.state, name: this.place.name }
+            place: {
+                id: this.place.id,
+                landmarks: this.place.landmarks,
+                state: this.place.state,
+                name: this.place.name
+            }
         };
     }
 }
@@ -78,10 +116,15 @@ class DistrictingPlan {
 export default class State {
     constructor(
         map,
-        swipemap,
-        { place, problem, id, assignment, units, ...args },
-        readyCallback
-    ) {
+        swipemap, {
+        place,
+        problem,
+        id,
+        assignment,
+        units,
+        ...args
+    },
+        readyCallback) {
         this.unitsRecord = units;
         this.place = place;
         this.idColumn = new IdColumn(units.idColumn);
@@ -89,13 +132,13 @@ export default class State {
             this.nameColumn = new IdColumn(units.nameColumn);
         }
         this.plan = new DistrictingPlan({
-            id,
-            assignment,
-            problem,
-            place,
-            ...args,
-            idColumn: this.idColumn
-        });
+                id,
+                assignment,
+                problem,
+                place,
+                ...args,
+                idColumn: this.idColumn
+            });
 
         this.initializeMapState(
             map,
@@ -103,15 +146,20 @@ export default class State {
             units,
             problem.type === "community" ? addBelowLabels : addBelowSymbols,
             place.id,
-            place.state
-        );
+            place.state);
+        (async() => {
+
+            let finished;
+            while (!(this.parts)) {
+                finished = await new Promise(resolve => setTimeout(resolve, 10));
+            }
+        });
         this.columnSets = getColumnSets(this, units);
 
         this.subscribers = [];
 
         this.update = this.update.bind(this);
         this.render = this.render.bind(this);
-
         if (assignment) {
             assignUnitsAsTheyLoad(this, assignment, readyCallback);
         } else {
@@ -123,22 +171,29 @@ export default class State {
     }
     initializeMapState(map, swipemap, unitsRecord, layerAdder, borderId, statename) {
         const {
-            units, unitsBorders,
-            coiunits, coiunits2,
-            bg_areas, bg_points,
-            swipeUnits, swipeUnitsBorders,
-            points, swipePoints,
-             counties, precincts, new_precincts, tracts,
-            clusterUnits, clusterUnitsLines
+            units,
+            unitsBorders,
+            coiunits,
+            coiunits2,
+            bg_areas,
+            bg_points,
+            swipeUnits,
+            swipeUnitsBorders,
+            points,
+            swipePoints,
+            counties,
+            precincts,
+            new_precincts,
+            tracts,
+            clusterUnits,
+            clusterUnitsLines
         } = addLayers(map,
-            swipemap,
-            this.parts,
-            unitsRecord.tilesets,
-            layerAdder,
-            borderId,
-            statename
-        );
-
+                swipemap,
+                this.parts,
+                unitsRecord.tilesets,
+                layerAdder,
+                borderId,
+                statename);
         this.units = units;
         this.unitsBorders = unitsBorders;
         this.coiunits = coiunits;
@@ -151,6 +206,7 @@ export default class State {
         this.layers = [units, points, bg_areas, precincts, new_precincts, tracts].filter(x => !!x);
         this.swipeLayers = [];
         this.map = map;
+
     }
     update(feature, part) {
         this.columnSets.forEach(columnSet => columnSet.update(feature, part, this.divisor));

@@ -467,6 +467,13 @@ loadModules(["esri/rest/support/Query", "esri/rest/query"]).then(([Query, query]
                 },
                 id: "el63"
             }, {
+                color: "#808080",
+                name: "Manassas",
+                capacity: {
+                    "2022": 0
+                },
+                id: "other"
+            }, {
                 color: "#0099cd",
                 name: "Benton",
                 capacity: {
@@ -705,11 +712,11 @@ loadModules(["esri/rest/support/Query", "esri/rest/query"]).then(([Query, query]
          * variations included.
          */
         districtColors = colorScheme.map((hex, i) => ({
-            id: i,
-            name: hex,
-            hex: hex,
-            hoverHex: hoverColorScheme[i]
-        }));
+                    id: i,
+                    name: hex,
+                    hex: hex,
+                    hoverHex: hoverColorScheme[i]
+                }));
     });
 })
 .catch(err => {
@@ -751,13 +758,12 @@ export function changeColorLuminance(hex, lum) {
 // a block hasn't been colored. I don't think this is a good system.
 
 export function getUnitColorProperty(parts) {
-	console.log(parts);
     const unitColorStyle = [
         "match",
         ["feature-state", "color"],
         ...parts
-        .map(part => [part.id, part.color.color])
-        .reduce((list, pair) => [...list, ...pair]),
+			.map(part => [part.id, part.color.color])
+			.reduce((list, pair) => [...list, ...pair]),
         "rgba(0, 0, 0, 0)"
     ];
 

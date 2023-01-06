@@ -58,7 +58,6 @@ export class Landmarks {
         this.visible = true;
         this.savedPlaces = savedPlaces;
         this.updateLandmarkList = updateLandmarkList;
-
         // polygon landmarks and tooltip
         map.addSource("landmarklist", this.savedPlaces);
         this.layer = new Layer(

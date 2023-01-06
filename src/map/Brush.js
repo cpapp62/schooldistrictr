@@ -1,6 +1,13 @@
-import { HoverWithRadius } from "./Hover";
-import { bindAll } from "../utils";
+import {
+    HoverWithRadius
+}
+from "./Hover";
+import {
+    bindAll
+}
+from "../utils";
 
+//export var results2;
 export default class Brush extends HoverWithRadius {
     constructor(layer, radius, color) {
         super(layer, radius);
@@ -12,7 +19,7 @@ export default class Brush extends HoverWithRadius {
         this.locked = false;
         this.changedColors = new Set();
         this.nycPlusMinus = {};
-
+        this.firstTime = true;
         this.listeners = {
             colorend: [],
             colorfeature: [],
@@ -23,13 +30,15 @@ export default class Brush extends HoverWithRadius {
         bindAll(["onMouseDown", "onMouseUp", "onClick", "onTouchStart", "prepToUndo", "undo", "redo", "clearUndo"],
             this);
         this.clearUndo();
+        console.log(this.layer);
     }
     clearUndo() {
         this.cursorUndo = 0;
         this.trackUndo = [{
-            color: "test",
-            initial: true,
-        }];
+                color: "test",
+                initial: true,
+            }
+        ];
     }
     setColor(color) {
         this.color = color;
@@ -55,123 +64,117 @@ export default class Brush extends HoverWithRadius {
         if (this.locked && !this.erasing) {
             this._colorFeatures(
                 feature =>
-                    feature.state.color === null ||
-                    feature.state.color === undefined ||
-                    isNaN(feature.state.color)
-            );
+                feature.state.color === null ||
+                feature.state.color === undefined ||
+                isNaN(feature.state.color));
         } else {
             this._colorFeatures(feature => feature.state.color !== this.color);
         }
     }
+    firstColor(features) {
+		console.log(features);
+        let seenFeatures = new Set();
+        for (let feature of features) {
+            if (!seenFeatures.has(feature.id)) {
+                seenFeatures.add(feature.id);
+                for (let listener of this.listeners.colorfeature) {
+                    listener(feature, feature.color);
+                }
+                if (!this.nycPlusMinus[String(Number(feature.color))]) {
+                    this.nycPlusMinus[String(Number(feature.color))] = {
+                        added: [],
+                        removed: []
+                    };
+                }
+                if (feature.color === null || feature.color === undefined) {
+                    // handled in removal of old color (as if this was painting a new color over this)
+                    // this.nycPlusMinus[String(Number(feature.color))].removed.push(feature.properties.GEOINDEX || feature.properties.GEOID20);
+                } else if (Object.keys(feature.properties).includes("OmniGDB.SDE.PZ22a_QAT_Simplify_NAD1983.OBJECTID")) {
+                    this.nycPlusMinus[String(Number(feature.color))].added.push(feature.properties["PZ_DATA_BNDY_ES.ST0_ES"]);
+                }
+            }
+            if (feature.state.color || feature.state.color === 0 || feature.state.color === '0') {
+                this.changedColors.add(Number(feature.state.color));
+                if (!this.nycPlusMinus[String(Number(feature.state.color))]) {
+                    this.nycPlusMinus[String(Number(feature.state.color))] = {
+                        added: [],
+                        removed: []
+                    };
+                }
+                if (Object.keys(feature.properties).includes("OmniGDB.SDE.PZ22a_QAT_Simplify_NAD1983.OBJECTID")) {
+                    this.nycPlusMinus[String(Number(feature.state.color))].removed.push(feature.properties["PZ_DATA_BNDY_ES.ST0_ES"]);
+                }
+            }
+            this.layer.setFeatureState(feature.id, {
+                ...feature.state,
+                color: feature.color,
+				locked: true
+            });
+            feature.state.locked = true;
+        }
+    }
     _colorFeatures(filter) {
         let seenFeatures = new Set(),
-            seenCounties = new Set(),
-            countyProp = "GEOID10";
+        seenCounties = new Set(),
+        countyProp = "GEOID10";
         if (this.color || this.color === 0 || this.color === "0") {
             this.changedColors.add(this.color);
             if (!this.nycPlusMinus[String(Number(this.color))]) {
-              this.nycPlusMinus[String(Number(this.color))] = { added:[], removed:[] };
+                this.nycPlusMinus[String(Number(this.color))] = {
+                    added: [],
+                    removed: []
+                };
             }
         }
         for (let feature of this.hoveredFeatures) {
             if (filter(feature)) {
-                if (this.county_brush) {
-                    let ps = feature.properties,
-                        countyFIPS = null,
-                        idSearch = (key, substr, fn) => {
-                            if (!ps[key]) {
-                                if (ps[key.toLowerCase()]) {
-                                    key = key.toLowerCase();
-                                } else {
-                                    return;
-                                }
-                            }
-                            if (substr) {
-                                if (typeof ps[key] === 'number') {
-                                  return [key, Number(String(ps[key]).substring(0, substr))];
-                                } else {
-                                  return [key, ps[key].substring(0, substr)];
-                                }
-                            } else {
-                                if (!fn) {
-                                    fn = x => x;
-                                }
-                                return [key, fn(ps[key])];
-                            }
-                        },
-                        nameSplice = (val) => {
-                            let name = val.split("-")[0].split(" ");
-                            name.splice(-1);
-                            return name.join(" ");
+                if (typeof(feature.state.locked) == "undefined") {
+                    if (!seenFeatures.has(feature.id)) {
+                        seenFeatures.add(feature.id);
+                        for (let listener of this.listeners.colorfeature) {
+                            listener(feature, this.color);
+                        }
+                        if (!this.nycPlusMinus[String(Number(this.color))]) {
+                            this.nycPlusMinus[String(Number(this.color))] = {
+                                added: [],
+                                removed: []
+                            };
+                        }
+                        if (this.color === null || this.color === undefined) {
+                            // handled in removal of old color (as if this was painting a new color over this)
+                            // this.nycPlusMinus[String(Number(this.color))].removed.push(feature.properties.GEOINDEX || feature.properties.GEOID20);
+                        } else if (Object.keys(feature.properties).includes("OmniGDB.SDE.PZ22a_QAT_Simplify_NAD1983.OBJECTID")) {
+                            this.nycPlusMinus[String(Number(this.color))].added.push(feature.properties["PZ_DATA_BNDY_ES.ST0_ES"]);
+                        }
+                    }
+
+                    // remember feature's initial color once per paint event
+                    // remember population data so it can be un-counted
+                    if (!this.trackUndo[this.cursorUndo][feature.id]) {
+                        this.trackUndo[this.cursorUndo][feature.id] = {
+                            properties: feature.properties,
+                            color: String(feature.state.color)
                         };
-                    [countyProp, countyFIPS] = idSearch("GEOID10", 5)
-                        || idSearch("GEOID", 5)
-                        || idSearch("GEOID20", 5)
-                        || idSearch("county_nam") // Michigan
-                        || idSearch("VTD", 5)
-                        || idSearch("VTDID", 5)
-                        // || idSearch("CNTYVTD", 3)
-                        || idSearch("Code", null, (precinct) => precinct.split(",")[0] + ",")
-                        || idSearch("COUNTYFP")
-                        || idSearch("COUNTYFP10")
-                        || idSearch("COUNTY")
-                        || idSearch("CTYNAME")
-                        || idSearch("CNTYNAME")
-                        || idSearch("cnty_nm")
-                        || idSearch("locality")
-						|| idSearch("PZ_DATA_BNDY_ES.ST0_ES")
-                        || idSearch("NAME", null, nameSplice)
-                        || idSearch("NAME10", null, nameSplice)
-                        || idSearch("Precinct", null, (val) => {
-                            // Oregon
-                            let name = val.split("_");
-                            name.splice(-1);
-                            return name.join("_");
-                        });
-                    if (countyFIPS) {
-                        seenCounties.add(countyFIPS);
                     }
+                    if (feature.state.color || feature.state.color === 0 || feature.state.color === '0') {
+                        this.changedColors.add(Number(feature.state.color));
+                        if (!this.nycPlusMinus[String(Number(feature.state.color))]) {
+                            this.nycPlusMinus[String(Number(feature.state.color))] = {
+                                added: [],
+                                removed: []
+                            };
+                        }
+                        if (Object.keys(feature.properties).includes("OmniGDB.SDE.PZ22a_QAT_Simplify_NAD1983.OBJECTID")) {
+                            this.nycPlusMinus[String(Number(feature.state.color))].removed.push(feature.properties["PZ_DATA_BNDY_ES.ST0_ES"]);
+                        }
+                    }
+                    this.layer.setFeatureState(feature.id, {
+                        ...feature.state,
+                        color: this.color,
+                        hover: true
+                    });
+                    feature.state.color = this.color;
                 }
-
-                if (!seenFeatures.has(feature.id)) {
-                    seenFeatures.add(feature.id);
-                    for (let listener of this.listeners.colorfeature) {
-                        listener(feature, this.color);
-                    }
-                    if (!this.nycPlusMinus[String(Number(this.color))]) {
-                      this.nycPlusMinus[String(Number(this.color))] = { added: [], removed: [] };
-                    }
-                    if (this.color === null || this.color === undefined) {
-                      // handled in removal of old color (as if this was painting a new color over this)
-                      // this.nycPlusMinus[String(Number(this.color))].removed.push(feature.properties.GEOINDEX || feature.properties.GEOID20);
-                    } else if (Object.keys(feature.properties).includes("OmniGDB.SDE.PZ22a_QAT_Simplify_NAD1983.OBJECTID")) {
-                      this.nycPlusMinus[String(Number(this.color))].added.push(feature.properties["PZ_DATA_BNDY_ES.ST0_ES"]);
-                    }
-                }
-
-                // remember feature's initial color once per paint event
-                // remember population data so it can be un-counted
-                if (!this.trackUndo[this.cursorUndo][feature.id]) {
-                    this.trackUndo[this.cursorUndo][feature.id] = {
-                        properties: feature.properties,
-                        color: String(feature.state.color)
-                    };
-                }
-                if (feature.state.color || feature.state.color === 0 || feature.state.color === '0') {
-                    this.changedColors.add(Number(feature.state.color));
-                    if (!this.nycPlusMinus[String(Number(feature.state.color))]) {
-                      this.nycPlusMinus[String(Number(feature.state.color))] = { added:[], removed:[] };
-                    }
-                    if (Object.keys(feature.properties).includes("OmniGDB.SDE.PZ22a_QAT_Simplify_NAD1983.OBJECTID")) {
-                      this.nycPlusMinus[String(Number(feature.state.color))].removed.push(feature.properties["PZ_DATA_BNDY_ES.ST0_ES"]);
-                    }
-                }
-                this.layer.setFeatureState(feature.id, {
-                    ...feature.state,
-                    color: this.color,
-                    hover: true
-                });
-                feature.state.color = this.color;
             } else {
                 this.layer.setFeatureState(feature.id, {
                     ...feature.state,
@@ -179,20 +182,7 @@ export default class Brush extends HoverWithRadius {
                 });
             }
         }
-        if (this.county_brush && seenCounties.size > 0) {
-            seenCounties.forEach(fips => {
-                this.layer.setCountyState(fips, countyProp, {
-                    color: this.color
-                },
-                filter,
-                this.trackUndo[this.cursorUndo],
-                this.listeners.colorfeature);
-            });
-            for (let listener of this.listeners.colorop) {
-                listener();
-            }
-        }
-        for (let listener of this.listeners.colorend) {
+		for (let listener of this.listeners.colorend) {
             listener();
         }
     }
@@ -240,7 +230,7 @@ export default class Brush extends HoverWithRadius {
 
         // add transparency to data-table to prevent strange pre-tally numbers
         if (window.nycmode) {
-          document.body.className = 'nycmode';
+            document.body.className = 'nycmode';
         }
     }
     onMouseUp() {
@@ -267,7 +257,10 @@ export default class Brush extends HoverWithRadius {
         if (brushedColor || brushedColor === 0 || brushedColor === '0') {
             this.changedColors.add(brushedColor * 1);
             if (!this.nycPlusMinus[String(brushedColor * 1)]) {
-              this.nycPlusMinus[String(brushedColor * 1)] = { added:[], removed:[] };
+                this.nycPlusMinus[String(brushedColor * 1)] = {
+                    added: [],
+                    removed: []
+                };
             }
         }
         Object.keys(atomicAction).forEach((fid) => {
@@ -289,19 +282,20 @@ export default class Brush extends HoverWithRadius {
             }
             this.changedColors.add(amendColor);
             if (amendColor !== null && !this.nycPlusMinus[String(amendColor)]) {
-              this.nycPlusMinus[String(amendColor)] = { added:[], removed:[] };
+                this.nycPlusMinus[String(amendColor)] = {
+                    added: [],
+                    removed: []
+                };
             }
             if (amendColor !== null) {
-              // restore a color to this feature
-              this.nycPlusMinus[String(amendColor)].added.push(Number(
-                atomicAction[fid].properties.GEOINDEX
-              ));
+                // restore a color to this feature
+                this.nycPlusMinus[String(amendColor)].added.push(Number(
+                        atomicAction[fid].properties.GEOINDEX));
             }
             if (brushedColor !== null) {
-              // remove the added color from this feature
-              this.nycPlusMinus[String(brushedColor)].removed.push(Number(
-                atomicAction[fid].properties.GEOINDEX
-              ));
+                // remove the added color from this feature
+                this.nycPlusMinus[String(brushedColor)].removed.push(Number(
+                        atomicAction[fid].properties.GEOINDEX));
             }
 
             // change map color to original
@@ -347,7 +341,10 @@ export default class Brush extends HoverWithRadius {
         if (brushedColor || brushedColor === 0 || brushedColor === '0') {
             this.changedColors.add(brushedColor * 1);
             if (!this.nycPlusMinus[String(brushedColor * 1)]) {
-              this.nycPlusMinus[String(brushedColor * 1)] = { added:[], removed:[] };
+                this.nycPlusMinus[String(brushedColor * 1)] = {
+                    added: [],
+                    removed: []
+                };
             }
         }
         let listeners = this.listeners.colorfeature;
@@ -365,20 +362,21 @@ export default class Brush extends HoverWithRadius {
             }
             this.changedColors.add(amendColor);
             if (!this.nycPlusMinus[String(amendColor)]) {
-              this.nycPlusMinus[String(amendColor)] = { added:[], removed:[] };
+                this.nycPlusMinus[String(amendColor)] = {
+                    added: [],
+                    removed: []
+                };
             }
 
             if (amendColor !== null || isNaN(amendColor)) {
-              // remove color from this feature
-              this.nycPlusMinus[String(amendColor)].removed.push(Number(
-                atomicAction[fid].properties.GEOINDEX
-              ));
+                // remove color from this feature
+                this.nycPlusMinus[String(amendColor)].removed.push(Number(
+                        atomicAction[fid].properties.GEOINDEX));
             }
             if (brushedColor !== null) {
-              // re-add color to this feature
-              this.nycPlusMinus[String(brushedColor)].added.push(Number(
-                atomicAction[fid].properties.GEOINDEX
-              ));
+                // re-add color to this feature
+                this.nycPlusMinus[String(brushedColor)].added.push(Number(
+                        atomicAction[fid].properties.GEOINDEX));
             }
 
             // change map colors
@@ -390,7 +388,9 @@ export default class Brush extends HoverWithRadius {
             for (let listener of listeners) {
                 listener({
                     id: fid,
-                    state: { color: amendColor },
+                    state: {
+                        color: amendColor
+                    },
                     properties: atomicAction[fid].properties
                 }, brushedColor);
             }
@@ -420,6 +420,7 @@ export default class Brush extends HoverWithRadius {
         this.layer.on("click", this.onClick);
         this.layer.map.on("touchstart", this.onTouchStart);
         this.layer.map.on("mousedown", this.onMouseDown);
+
     }
 
     deactivate(mouseover) {

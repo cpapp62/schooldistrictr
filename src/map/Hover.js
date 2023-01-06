@@ -1,13 +1,15 @@
+
 export class Hover {
     constructor(layer) {
         this.layer = layer;
 
         this.hoveredFeature = null;
         this.deactivatedHover = false;
-
+        this.firstTime = true;
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseLeave = this.onMouseLeave.bind(this);
         this.hoverOff = this.hoverOff.bind(this);
+        this.initialColor = this.initialColor.bind(this);
     }
     hoverOff() {
         if (this.hoveredFeature !== null) {
@@ -61,7 +63,7 @@ export class Hover {
 export class HoverWithRadius extends Hover {
     constructor(layer, radius) {
         super(layer);
-
+        this.firstTime = false;
         this.radius = radius;
         this.hoveredFeatures = [];
     }
@@ -89,12 +91,18 @@ export class HoverWithRadius extends Hover {
     onMouseMove(e) {
         const box = boxAround(e.point, this.radius);
         const features = this.layer.map.queryRenderedFeatures(box, {
-            layers: [this.layer.id]
-        });
+                layers: [this.layer.id]
+            });
         if (features.length > 0) {
             this.hoverOff();
             this.hoverOn(features);
         }
+    }
+    initialColor(feature) {
+		const box = [ feature.attributes.point_x, feature.attributes.point_y];
+		const point = this.layer.map.project(box);
+		const features = this.layer.map.queryRenderedFeatures(point, {layers: [this.layer.sourceLayer]});
+		return features;
     }
 }
 

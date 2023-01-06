@@ -11,7 +11,7 @@ export default class Tool {
     activate() {
         this.active = true;
         try {
-            document.getElementById(`tool-${this.id}`).checked = true;
+			document.getElementById(`tool-${this.id}`).checked = true;
         } catch(e) {
 			console.log(e);
 		}

@@ -1,12 +1,31 @@
 /* eslint-disable no-return-assign */
-import { html } from "lit-html";
-import { repeat } from "lit-html/directives/repeat";
-import { actions } from "../../reducers/toolbar";
-import { savePlanToDB } from "../../routes";
+import {
+    html
+}
+from "lit-html";
+import {
+    repeat
+}
+from "lit-html/directives/repeat";
+import {
+    actions
+}
+from "../../reducers/toolbar";
+import {
+    savePlanToDB
+}
+from "../../routes";
 import Tabs from "../Tabs";
 import OptionsContainer from "./OptionsContainer";
-import { renderSaveModal, renderEventModal } from "../Modal";
-import { spatial_abilities } from "../../utils";
+import {
+    renderSaveModal,
+    renderEventModal
+}
+from "../Modal";
+import {
+    spatial_abilities
+}
+from "../../utils";
 
 export default class Toolbar {
     constructor(store, editor) {
@@ -53,16 +72,15 @@ export default class Toolbar {
         btn.disabled = true;
 
         const saved = () => {
-          let btn = e.target;
-          btn.innerText = "Saved";
-          btn.className = "saved";
+            let btn = e.target;
+            btn.innerText = "Saved";
+            btn.className = "saved";
         };
 
         if (spatial_abilities(this.state.place.id).portal && (window.location.href.includes("portal") || window.location.href.includes("qa-portal"))) {
             saved();
             renderSaveModal(this.state, savePlanToDB, window.location.href.includes("qa-portal"), new URLSearchParams(
-                window.location.search
-              ).get("draft"));
+                    window.location.search).get("draft"));
             return;
         } else if (window.location.href.includes("event")) {
             saved();
@@ -100,12 +118,14 @@ export default class Toolbar {
         this.state = state;
     }
     render() {
-        const { dropdownMenuOpen } = this.store.state.toolbar;
+        const {
+            dropdownMenuOpen
+        } = this.store.state.toolbar;
         let eventdefault = "";
         if (window.location.href.includes("event=")) {
             eventdefault = window.location.href.split("event=")[1].split("&")[0].split("#")[0];
         }
-        return html`
+            return html `
         <div class="toolbar toolbar-animated">
             <nav>
                 <div class="toolbar-top">
@@ -212,20 +232,19 @@ export default class Toolbar {
 
 function DropdownMenuButton(isOpen, dispatch) {
     const toggleDropdownMenu = isOpen
-        ? () => dispatch(actions.closeDropdownMenu())
-        : () => {
-              requestAnimationFrame(() =>
-                  window.addEventListener(
-                      "click",
-                      () => {
-                          dispatch(actions.closeDropdownMenu());
-                      },
-                      { once: true }
-                  )
-              );
-              dispatch(actions.openDropdownMenu());
-          };
-    return html`
+         ? () => dispatch(actions.closeDropdownMenu())
+         : () => {
+        requestAnimationFrame(() =>
+            window.addEventListener(
+                "click",
+                () => {
+                dispatch(actions.closeDropdownMenu());
+            }, {
+                once: true
+            }));
+        dispatch(actions.openDropdownMenu());
+    };
+    return html `
         <button
             tabindex="1"
             class="button button--subtle button--icon button--no-shadow"
@@ -237,19 +256,18 @@ function DropdownMenuButton(isOpen, dispatch) {
 }
 
 function DropdownMenu(options, open) {
-    return html`
+    return html `
         <ul class="dropdown reveal ${open ? "" : "reveal--hidden "}ui-list">
             ${options.map(
                 option =>
                     html`
-                        <li
-                            id="${option.id || ""}"
-                            class="ui-list__item"
-                            @click=${open ? option.onClick : null}
-                        >
-                            ${option.name}
-                        </li>
-                    `
+     <li id="${option.id || " "}"
+        class="ui-list__item"
+         @click=${open ? option.onClick : null}
+     >
+		${option.name}
+     </li>
+    `
             )}
         </ul>
     `;

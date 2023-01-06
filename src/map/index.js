@@ -42,13 +42,6 @@ export class MapState {
                 touchZoomRotate: true,
                 ...options
             });
-        /*this.map = new Map({
-        container: mapContainer,
-        style: mapStyle,
-        center: [-86.0, 37.83],
-        zoom: 3,
-        //basemap: "arcgis-light-gray"
-        });*/
         this.nav = new mapboxgl.NavigationControl();
         this.map.addControl(this.nav, "top-left");
         this.mapboxgl = mapboxgl;
@@ -67,13 +60,12 @@ function addBaseUnits(map, parts, tileset, layerAdder) {
     //mapbox://cpapp61.4g1pu4l4
     //PZ22a_Simplify_Enrollment_Pro-17kekz
     console.log(parts);
-
-    console.log(parts);
     const units = new Layer(map, {
             id: tileset.sourceLayer,
             source: tileset.sourceLayer,
             "source-layer": tileset.sourceLayer,
             type: "fill",
+			schooltype: tileset.schooltype,
             paint: {
                 "fill-color": getUnitColorProperty(parts),
                 "fill-opacity": 0.8
@@ -94,6 +86,7 @@ function addBaseUnits(map, parts, tileset, layerAdder) {
         units,
         unitsBorders
     };
+
 }
 
 /**
@@ -103,10 +96,19 @@ function addBaseUnits(map, parts, tileset, layerAdder) {
  * @param {Function} layerAdder How do we add stuff?
  * @returns {Layer} districtr Layer object.
  */
-function addPoints(map, tileset, layerAdder) {
+function addPoints(map, tileset, layerAdder, borderID) {
+
     if (!tileset) {
         return null;
     }
+	let filterID;
+	if(borderID == "elemcurr_1"){
+		filterID = 1;
+	}else if(borderID == "midcurr_1"){
+		filterID = 2;
+	}else if(borderID == "higcurr_1"){
+		filterID = 3;
+	}
     return new Layer(
         map, {
         id: tileset.sourceLayer + "-points",
@@ -114,10 +116,13 @@ function addPoints(map, tileset, layerAdder) {
         source: tileset.sourceLayer,
         "source-layer": tileset.sourceLayer,
         paint: {
-            "circle-opacity": 0
-        }
+            "circle-opacity": 1,
+			"circle-color": "#FF0000",
+			"circle-radius": 2
+        },
+		filter: ['all', ['==', 'SCHLTYPE', filterID]]
     },
-        layerAdder);
+        layerAdder, filterID);
 }
 
 /**
@@ -448,74 +453,63 @@ export function addLayers(map, swipemap, parts, tilesets, layerAdder, borderID, 
     // For each of the default tilesets -- base units and points -- add them as
     // sources for the Map.
     for (let tileset of tilesets) {
-        console.log(tileset);
         map.addSource(tileset.sourceLayer, tileset.source);
     }
-
+	
     // Add base units to the map.
-    (async() => {
-        console.log("waiting for parts");
-        while (!window.hasOwnProperty(parts)) // define the condition as you like
-            await new Promise(resolve => setTimeout(resolve, 1000));
-        console.log("variable is defined");
-    })();
-    parts.then(function () {
-        let clusterTileset = tilesets.find((t) => t.type === "fill"), {
-            units,
-            unitsBorders
-        } = addBaseUnits(map, parts, clusterTileset, layerAdder),
-        // Add point units to the map.
-        pointTileset = tilesets.find((t) => t.type === "circle"),
-        points = addPoints(map, pointTileset, layerAdder),
+    let clusterTileset = tilesets.find((t) => t.type === "fill"), {
+        units,
+        unitsBorders
+    } = addBaseUnits(map, parts, clusterTileset, layerAdder),
+	
+	// Add point units to the map.
+    pointTileset = tilesets.find((t) => t.type === "circle"),
+    points = addPoints(map, pointTileset, layerAdder, borderID),
 
-        // Add county units to the map.
-        counties = addCounties(map, COUNTIES_TILESET, layerAdder, stateName),
+    // Add county units to the map.
+    counties = addCounties(map, COUNTIES_TILESET, layerAdder, stateName),
 
-        // Add block group units to the map.
-        bgTileset = tilesets.find((t) => t.source.url.includes("blockgroups") && !t.source.url.includes("points")),
-        bgAreas = addBGs(map, bgTileset, layerAdder, borderID),
-        bg_areas = bgAreas,
+    // Add block group units to the map.
+    bgTileset = tilesets.find((t) => t.source.url.includes("blockgroups") && !t.source.url.includes("points")),
+    bgAreas = addBGs(map, bgTileset, layerAdder, borderID),
+    bg_areas = bgAreas,
 
-        // Add COI units to the map.
-        {
-            clusterUnits,
-            clusterUnitsLines,
-            coiUnits,
-            coiUnitsLines
-        } = addCOIUnits(map, stateName.toLowerCase()),
-        coiunits = coiUnits,
-        coiUnits2 = null,
+    // Add COI units to the map.
+    {
+        clusterUnits,
+        clusterUnitsLines,
+        coiUnits,
+        coiUnitsLines
+    } = addCOIUnits(map, stateName.toLowerCase()),
+    coiunits = coiUnits,
+    coiUnits2 = null,
 
-        // Add *specifically handled* precinct units to the map.
-        {
-            oldPrecincts,
-            newPrecincts
-        } = addPrecincts(map, tilesets, stateName),
-        precincts = oldPrecincts,
-        new_precincts = newPrecincts,
+    // Add *specifically handled* precinct units to the map.
+    {
+        oldPrecincts,
+        newPrecincts
+    } = addPrecincts(map, tilesets, stateName),
+    precincts = oldPrecincts,
+    new_precincts = newPrecincts,
 
-        // Add *specifically handled* tract units to the map.
-        tracts = addTracts(map, tilesets, borderID);
+    // Add *specifically handled* tract units to the map.
+    tracts = addTracts(map, tilesets, borderID);
 
-        // Cities in Communities of Interest will have thicker borders.
-        cities(map, borderID);
-        return {
-            units,
-            unitsBorders,
-            coiunits,
-            coiUnits2,
-            points,
-            counties,
-            bg_areas,
-            precincts,
-            new_precincts,
-            tracts,
-            clusterUnits,
-            clusterUnitsLines
-        };
-    })
-    parts.catch(function () {
-        console.log('Some error has occurred');
-    });
+    // Cities in Communities of Interest will have thicker borders.
+    cities(map, borderID);
+    return {
+        units,
+        unitsBorders,
+        coiunits,
+        coiUnits2,
+        points,
+        counties,
+        bg_areas,
+        precincts,
+        new_precincts,
+        tracts,
+        clusterUnits,
+        clusterUnitsLines
+    };
 
 }

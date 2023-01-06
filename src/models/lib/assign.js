@@ -77,6 +77,7 @@ export function assignUnitsAsTheyLoad(state, assignment, readyCallback) {
         }
         readyCallback();
         state.render();
+		console.log("resources loaded");
     });
 }
 

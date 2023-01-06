@@ -31,7 +31,8 @@ export default class LandmarkTool extends Tool {
 
         // remove landmarks which were being drawn and not saved
         lm.data.features = lm.data.features.filter(f => !f.number_id);
-
+		
+		
         this.landmarks = new Landmarks(state.map, lm, this.updateLandmarkList);
         this.options = new LandmarkOptions(
             this.landmarks,

@@ -86,7 +86,6 @@ export default class CommunityBrush extends Brush {
                     fullColors.push(this.color);
                     addsColor = true;
                 }
-				console.log(addsColor);
                 if (this.color !== null && addsColor && feature.properties && Object.keys(feature.properties).includes("GEOINDEX")) {
                   // add this color if not an eraser
                   if (!this.nycPlusMinus[String(this.color)]) {

@@ -107,10 +107,11 @@ class BrushToolOptions {
     }
     render() {
 		let number = 0;
+		console.log(this.colors.slice(0,-1));
         const activeColor = (this.state.place.id).substr(0, 2) + (this.state.place.id).match(/(\d+)/)[0];
         return html`
             ${this.colors.length > 1
-                ? BrushColorPicker(this.state, this.colors, this.selectColor, activeColor)
+                ? BrushColorPicker(this.state, this.colors.slice(0,-1), this.selectColor, activeColor)
                 : ""}
             ${BrushSlider(this.brush.radius, this.changeRadius)}
             ${this.options && this.options.county_brush

@@ -1,7 +1,10 @@
 import Election from "../Election";
 import Part from "../Part";
 import Population from "../Population";
-import { districtColors } from "../../colors";
+import {
+    districtColors
+}
+from "../../colors";
 import regeneratorRuntime from "regenerator-runtime";
 //require("babel-polyfill");
 "use strict";
@@ -26,25 +29,23 @@ import regeneratorRuntime from "regenerator-runtime";
 // where we use `state.vap` and add code handling `state.under18` or
 // something.
 
-export async function getParts(problem) {
+export function getParts(problem) {
     let name = problem.name || "District";
     let parts = [];
-	let start = 0;
-	if(problem.pluralNoun == "Middle Schools"){
-		start = 63;
-	}
-	else if(problem.pluralNoun == "High Schools"){
-		start = 81;
-	}
-	console.log(districtColors);
-	(async() => {
-		console.log("waiting for variable");
-		while(!window.hasOwnProperty(districtColors)) // define the condition as you like
-			await new Promise(resolve => setTimeout(resolve, 1000));
-		console.log("variable is defined");
-	})();
-	console.log(districtColors);
-    for (let i = start; i < problem.numberOfParts+start; i++) {
+    let start = 0;
+    if (problem.pluralNoun == "Middle Schools") {
+        start = 63;
+    } else if (problem.pluralNoun == "High Schools") {
+        start = 81;
+    }
+    const waitDistrict = (async() => {
+        while (!(districtColors)) {
+            console.log("waiting");
+            await new Promise(resolve => setTimeout(resolve, 10));
+        }
+    });
+    while (typeof(districtColor) == "undefined") {}
+    for (let i = start; i < problem.numberOfParts + start + 1; i++) {
         let j = i % districtColors.length;
         parts[i - start] = new Part(i - start, name, (i - start) + 1, districtColors[j]);
     }
@@ -59,14 +60,11 @@ export async function getParts(problem) {
 
 function getPopulation(place, parts) {
     let population = place.columnSets.find(
-        columnSet => columnSet.name === "Population"
-    );
+            columnSet => columnSet.name === "Population");
     let population18 = place.columnSets.find(
-        columnSet => columnSet.name === "Population (2018)"
-    );
+            columnSet => columnSet.name === "Population (2018)");
     let population19 = place.columnSets.find(
-        columnSet => columnSet.name === "Population (2019)"
-    );
+            columnSet => columnSet.name === "Population (2019)");
     if (population18) {
         population18.subgroups.forEach(sg => {
             sg.name += " (2018)";
@@ -89,15 +87,20 @@ function getPopulation(place, parts) {
         population.total_alt = population19.total;
         population.name_alt = "Population (2019)";
     }
-    return new Population({ ...population, parts });
+    return new Population({
+        ...population,
+        parts
+    });
 }
 
 function getVAP(place, parts) {
     const vap = place.columnSets.find(
-        columnSet => columnSet.name === "Voting Age Population"
-    );
+            columnSet => columnSet.name === "Voting Age Population");
     if (vap) {
-        return new Population({ ...vap, parts });
+        return new Population({
+            ...vap,
+            parts
+        });
     } else {
         return null;
     }
@@ -105,10 +108,12 @@ function getVAP(place, parts) {
 
 function getCVAP(place, parts) {
     const cvap = place.columnSets.find(
-        columnSet => columnSet.name === "Citizen Voting Age Population"
-    );
+            columnSet => columnSet.name === "Citizen Voting Age Population");
     if (cvap) {
-        return new Population({ ...cvap, parts });
+        return new Population({
+            ...cvap,
+            parts
+        });
     } else {
         return null;
     }
@@ -116,10 +121,12 @@ function getCVAP(place, parts) {
 
 function getPcts(place, parts) {
     const pcts = place.columnSets.find(
-        columnSet => columnSet.name && columnSet.name.toLowerCase() === "percentages"
-    );
+            columnSet => columnSet.name && columnSet.name.toLowerCase() === "percentages");
     if (pcts) {
-        return new Population({ ...pcts, parts });
+        return new Population({
+            ...pcts,
+            parts
+        });
     } else {
         return null;
     }
@@ -127,10 +134,12 @@ function getPcts(place, parts) {
 
 function getAges(place, parts) {
     const ages = place.columnSets.find(
-        columnSet => columnSet.name === "Age of Population"
-    );
+            columnSet => columnSet.name === "Age of Population");
     if (ages) {
-        return new Population({ ...ages, parts });
+        return new Population({
+            ...ages,
+            parts
+        });
     } else {
         return null;
     }
@@ -138,10 +147,12 @@ function getAges(place, parts) {
 
 function getIncomes(place, parts) {
     const incomes = place.columnSets.find(
-        columnSet => columnSet.name === "Households by Income"
-    );
+            columnSet => columnSet.name === "Households by Income");
     if (incomes) {
-        return new Population({ ...incomes, parts });
+        return new Population({
+            ...incomes,
+            parts
+        });
     } else {
         return null;
     }
@@ -149,10 +160,12 @@ function getIncomes(place, parts) {
 
 function getMedIncome(place, parts) {
     const incomes = place.columnSets.find(
-        columnSet => columnSet.name === "Median Income"
-    );
+            columnSet => columnSet.name === "Median Income");
     if (incomes) {
-        return new Population({ ...incomes, parts });
+        return new Population({
+            ...incomes,
+            parts
+        });
     } else {
         return null;
     }
@@ -160,10 +173,12 @@ function getMedIncome(place, parts) {
 
 function getRent(place, parts) {
     const rent = place.columnSets.find(
-        columnSet => columnSet.name === "Households by Rental"
-    );
+            columnSet => columnSet.name === "Households by Rental");
     if (rent) {
-        return new Population({ ...rent, parts });
+        return new Population({
+            ...rent,
+            parts
+        });
     } else {
         return null;
     }
@@ -171,10 +186,12 @@ function getRent(place, parts) {
 
 function getBroadband(place, parts) {
     const broadband = place.columnSets.find(
-        columnSet => columnSet.name === "Technology"
-    );
+            columnSet => columnSet.name === "Technology");
     if (broadband) {
-        return new Population({ ...broadband, parts });
+        return new Population({
+            ...broadband,
+            parts
+        });
     } else {
         return null;
     }
@@ -182,10 +199,12 @@ function getBroadband(place, parts) {
 
 function getSNAP(place, parts) {
     const snap = place.columnSets.find(
-        columnSet => columnSet.name === "Households and Food"
-    );
+            columnSet => columnSet.name === "Households and Food");
     if (snap) {
-        return new Population({ ...snap, parts });
+        return new Population({
+            ...snap,
+            parts
+        });
     } else {
         return null;
     }
@@ -193,10 +212,12 @@ function getSNAP(place, parts) {
 
 function getAsthma(place, parts) {
     const asthma = place.columnSets.find(
-        columnSet => columnSet.name === "Health issues"
-    );
+            columnSet => columnSet.name === "Health issues");
     if (asthma) {
-        return new Population({ ...asthma, parts });
+        return new Population({
+            ...asthma,
+            parts
+        });
     } else {
         return null;
     }
@@ -204,10 +225,12 @@ function getAsthma(place, parts) {
 
 function getEducation(place, parts) {
     const edu = place.columnSets.find(
-        columnSet => columnSet.name === "Education"
-    );
+            columnSet => columnSet.name === "Education");
     if (edu) {
-        return new Population({ ...edu, parts });
+        return new Population({
+            ...edu,
+            parts
+        });
     } else {
         return null;
     }
@@ -215,10 +238,12 @@ function getEducation(place, parts) {
 
 function getVoters(place, parts) {
     const voters = place.columnSets.find(
-        columnSet => columnSet.name === "Registered Voters"
-    );
+            columnSet => columnSet.name === "Registered Voters");
     if (voters) {
-        return new Population({ ...voters, parts });
+        return new Population({
+            ...voters,
+            parts
+        });
     } else {
         return null;
     }
@@ -226,34 +251,30 @@ function getVoters(place, parts) {
 
 function getElections(place, parts) {
     const elections = place.columnSets.filter(
-        columnSet => columnSet.type === "election"
-    );
+            columnSet => columnSet.type === "election");
     elections.forEach(election => {
         election.year = election.metadata
-            ? election.metadata.year
-            : election.name.split(" ")[0];
+             ? election.metadata.year
+             : election.name.split(" ")[0];
     });
     const alternate = place.columnSets.filter(
-        columnSet => columnSet.type === "electionx"
-    );
+            columnSet => columnSet.type === "electionx");
 
     return elections
-        .sort((a, b) => b.year - a.year)
-        .map(
-            election =>
-                new Election(
-                    election.metadata
-                        ? `${election.metadata.year} ${
+    .sort((a, b) => b.year - a.year)
+    .map(
+        election =>
+        new Election(
+            election.metadata
+             ? `${election.metadata.year} ${
                               election.metadata.race
                           } Election`
-                        : `${election.name} Election`,
-                    election.subgroups,
-                    parts,
-                    alternate
-                        ? alternate.find(e => e.name === election.name)
-                        : null
-                )
-        );
+             : `${election.name} Election`,
+            election.subgroups,
+            parts,
+            alternate
+             ? alternate.find(e => e.name === election.name)
+             : null));
 }
 
 export function getColumnSets(state, unitsRecord) {
@@ -277,8 +298,7 @@ export function getColumnSets(state, unitsRecord) {
         ...state.population.subgroups,
         ...state.elections.reduce(
             (cols, election) => [...cols, ...election.subgroups],
-            []
-        )
+            [])
     ];
     if (state.vap) {
         state.columns = [

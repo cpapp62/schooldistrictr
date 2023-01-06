@@ -7,6 +7,6 @@ export default class IdColumn {
         if (feature.properties === undefined) {
             return undefined;
         }
-        return feature.properties[this.key];
+        return feature.id;
     }
 }

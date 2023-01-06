@@ -1,6 +1,13 @@
-import { isString } from "../utils";
-import { blendColors, changeColorLuminance } from "../colors";
-
+import {
+    isString
+}
+from "../utils";
+import {
+    blendColors,
+    changeColorLuminance
+}
+from "../colors";
+let colorExist = false;
 // The addBelowLabels method gives the right look on the Mapbox "streets" basemap,
 // while addBelowSymbols gives the right look on the "light" basemap.
 
@@ -49,7 +56,7 @@ export default class Layer {
      * @param {function} [adder] a function (map, layer) -> void that adds the layer
      *  to the map.
      */
-    constructor(map, layer, adder) {
+    constructor(map, layer, adder, filterID) {
         this.map = map;
         this.id = layer.id;
         this.sourceId = isString(layer.source) ? layer.source : layer.id;
@@ -84,21 +91,19 @@ export default class Layer {
         }
     }
     setFeatureState(featureId, state) {
-        this.map.setFeatureState(
-            {
-                source: this.sourceId,
-                sourceLayer: this.sourceLayer,
-                id: featureId
-            },
-            state
-        );
+        this.map.setFeatureState({
+            source: this.sourceId,
+            sourceLayer: this.sourceLayer,
+            id: featureId
+        },
+            state);
     }
     setCountyState(fips, countyProp, setState, filter, undoInfo, tallyListeners) {
         let seenFeatures = new Set(),
-            filterStrings = [
-                "all",
-                ["has", countyProp]
-            ];
+        filterStrings = [
+            "all",
+            ["has", countyProp]
+        ];
         if (["COUNTY", "CTYNAME", "CNTYNAME", "COUNTYFP", "COUNTYFP10", "cnty_nm", "county_nam", "locality"].includes(countyProp)) {
             filterStrings.push(["==", ["get", countyProp], fips]);
         } else if (typeof fips === 'number') {
@@ -109,7 +114,10 @@ export default class Layer {
             filterStrings.push([">=", ["get", countyProp], fips]);
             filterStrings.push(["<", ["get", countyProp], ((isNaN(fips * 1) || (String(fips)[0] === "0") || countyProp.toLowerCase().includes("name")) ? fips + "z" : String(Number(fips) + 1))]);
         }
-
+        console.log(this.map);
+        console.log(this.map.querySourceFeatures(this.sourceId, {
+                sourceLayer: this.sourceLayer
+            }));
         this.map.querySourceFeatures(this.sourceId, {
             sourceLayer: this.sourceLayer,
             filter: filterStrings
@@ -144,7 +152,7 @@ export default class Layer {
                     }
 
                     let useBlendColor = Array.isArray(finalColor) && (finalColor.length > 1),
-                        blendColor = Array.isArray(finalColor) ? blendColors(finalColor) : finalColor;
+                    blendColor = Array.isArray(finalColor) ? blendColors(finalColor) : finalColor;
 
                     this.setFeatureState(feature.id, {
                         ...feature.state,
@@ -175,13 +183,18 @@ export default class Layer {
     }
     getFeature(featureId) {
         const features = this.map.querySourceFeatures(this.sourceId, {
-            sourceLayer: this.sourceLayer,
-            filter: ["==", ["id"], featureId]
-        });
+                sourceLayer: this.sourceLayer,
+                filter: ["==", ["id"], featureId]
+            });
         return features[0];
     }
     queryRenderedFeatures() {
-        return this.map.queryRenderedFeatures(null, { layers: [this.id] });
+        console.log(this.map.queryRenderedFeatures(null, {
+                layers: [this.id]
+            }));
+        return this.map.queryRenderedFeatures(null, {
+            layers: [this.id]
+        });
     }
     querySourceFeatures() {
         return this.map.querySourceFeatures(this.sourceId, {
@@ -194,7 +207,7 @@ export default class Layer {
     setAssignment(feature, part) {
         // used when loading
         let useBlendColor = false,
-            blendColor = null;
+        blendColor = null;
         if (Array.isArray(part)) {
             if (part.length === 1) {
                 part = part[0];
@@ -220,7 +233,7 @@ export default class Layer {
             return callback();
         }
         const handler = () =>
-            callback(() => this.map.off("sourcedata", handler));
+        callback(() => this.map.off("sourcedata", handler));
         this.map.on("sourcedata", handler);
     }
 }
